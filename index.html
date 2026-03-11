@@ -176,7 +176,9 @@
         <div class="settings-card" id="card-appearance">
           <div class="card-head">
             <div class="card-title">Appearance</div>
-            <div class="card-actions"><button class="pill-btn" onclick="selectTheme(state.theme||'midnight')">Reapply</button></div>
+            <div class="card-actions">
+              <button class="pill-btn" id="btn-auto-theme" onclick="toggleAutoTheme()">Auto Day/Night: ON</button>
+            </div>
           </div>
           <div class="card-body" style="padding:6px 10px 14px 10px;">
             <div style="font-size:12px;color:var(--muted);margin:6px 6px 10px;">Pick a vibe for the whole assistant.</div>
@@ -432,6 +434,7 @@ let state = {
   voiceEnabled:true, typewriterEnabled:true, remindersEnabled:false,
   selectedVoiceURI:'', voiceRate:1.0, voicePitch:1.0,
   elevenLabsKey:'99edeacbb8f94734200573ff438f271f', elevenVoiceId:'21m00Tcm4TlvDq8ikWAM', elevenKeyCursor:0, voiceEngine:'elevenlabs',
+  autoTheme:true,
   provider:'bigmodel',
   bigModelKey:'0210af5bab1740e8a61732191ec368ca.z0telieFVSj5BbN6', bigModelModel:'glm-4.7', bigModelBase:'https://api.z.ai/api/paas/v4',
   geminiKey:'AIzaSyC9-SKbxtrN33RTVYZDLFfCsdlToO1rTa4', geminiModel:'gemini-1.5-flash-latest', geminiBase:'https://generativelanguage.googleapis.com/v1beta',
@@ -500,6 +503,7 @@ function init() {
       const defaults = {
         elevenLabsKey: '99edeacbb8f94734200573ff438f271f',
         elevenKeyCursor: 0,
+        autoTheme: true,
         theme: 'midnight',
         provider: 'bigmodel',
         bigModelKey:'0210af5bab1740e8a61732191ec368ca.z0telieFVSj5BbN6',
@@ -540,6 +544,8 @@ function init() {
   if (state.provider === 'ollama') { state.provider = 'bigmodel'; saveState(); }
 
   applyTheme(state.theme || 'midnight', true);
+  applyAutoTheme();
+  setInterval(applyAutoTheme, 5*60*1000);
   if (state.userName && state.assistantName) showApp();
 
   // Speech recognition
@@ -615,6 +621,17 @@ function applyTheme(key, skipSave=false) {
   if (!skipSave) saveState();
   markActiveTheme(key);
 }
+function applyAutoTheme() {
+  if (!state.autoTheme) return;
+  const hour = new Date().getHours();
+  const target = (hour >= 7 && hour < 18) ? 'glass' : 'midnight';
+  if (state.theme !== target) {
+    applyTheme(target);
+  } else {
+    markActiveTheme(target);
+  }
+  updateAutoThemeUI();
+}
 function markActiveTheme(key) {
   document.querySelectorAll('.theme-card').forEach(card=>{
     card.classList.toggle('active', card.dataset.theme === key);
@@ -639,9 +656,11 @@ function renderThemeGrid() {
 }
 function selectTheme(key) {
   if (!themes[key]) key = 'midnight';
+  state.autoTheme = false;
   applyTheme(key);
   renderThemeGrid();
-  showToast(`${themes[key]?.name || 'Theme'} applied`);
+  updateAutoThemeUI();
+  showToast(`${themes[key]?.name || 'Theme'} applied (manual)`);
 }
 function setProvider(p) {
   state.provider = p; saveState(); updateProviderUI();
@@ -702,6 +721,18 @@ function revealApiInputs() {
     document.getElementById('card-api')?.classList.remove('is-collapsed');
     updateProviderUI();
   }
+}
+function toggleAutoTheme() {
+  state.autoTheme = !state.autoTheme;
+  saveState();
+  updateAutoThemeUI();
+  if (state.autoTheme) applyAutoTheme();
+}
+function updateAutoThemeUI() {
+  const btn = document.getElementById('btn-auto-theme');
+  if (!btn) return;
+  btn.classList.toggle('active', !!state.autoTheme);
+  btn.textContent = state.autoTheme ? 'Auto Day/Night: ON' : 'Auto Day/Night: OFF';
 }
 
 // ═══════════════════════════
@@ -974,6 +1005,7 @@ function loadSettingsUI() {
   document.getElementById('toggle-reminder').classList.toggle('on', !!state.remindersEnabled);
   renderThemeGrid();
   markActiveTheme(state.theme || 'midnight');
+  updateAutoThemeUI();
   updateProviderUI();
   // Init voice engine UI
   switchVoiceEngine(state.voiceEngine || 'elevenlabs');
