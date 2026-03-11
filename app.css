@@ -109,8 +109,9 @@ body.theme-glass .avatar-ring{opacity:0.6;}
 /* HEADER */
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .assistant-identity{display:flex;align-items:center;gap:14px;}
-.dashboard-video{width:56px;height:56px;border-radius:14px;overflow:hidden;border:1px solid var(--border);box-shadow:0 8px 20px rgba(0,0,0,0.18);}
-.dashboard-video video{width:100%;height:100%;object-fit:cover;display:block;}
+.avatar-wrap{display:none;}
+.talk-video{width:54px;height:54px;border-radius:12px;overflow:hidden;border:1px solid var(--border);box-shadow:0 8px 20px rgba(0,0,0,0.18);}
+.talk-video video{width:100%;height:100%;object-fit:cover;display:block;}
 
 /* AVATAR */
 .avatar-wrap{position:relative;width:54px;height:54px;flex-shrink:0;}
