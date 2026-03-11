@@ -19,6 +19,7 @@
   <symbol id="ic-mic" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3Zm-1 17.93V22h2v-2.07A7.002 7.002 0 0 0 19 13h-2a5 5 0 1 1-10 0H5a7.002 7.002 0 0 0 6 6.93Z"/></symbol>
   <symbol id="ic-send" viewBox="0 0 24 24"><path d="M3.172 20.829 21 12 3.172 3.172 3 10l10 2-10 2z"/></symbol>
   <symbol id="ic-logout" viewBox="0 0 24 24"><path d="M13 4a1 1 0 0 0-1-1H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6a1 1 0 0 0 1-1v-3h-2v2H6V6h5v2h2V4Zm7.707 8.707-3 3-1.414-1.414L17.586 13H11v-2h6.586l-1.293-1.293 1.414-1.414 3 3a1 1 0 0 1 0 1.414Z"/></symbol>
+  <symbol id="ic-menu" viewBox="0 0 24 24"><path d="M4 6h16v2H4V6Zm0 5h16v2H4v-2Zm0 5h16v2H4v-2Z"/></symbol>
   <symbol id="ic-happy" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm-3 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm6 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm-6.5 4.5a5 5 0 0 0 7 0l-1.414-1.414a3 3 0 0 1-4.172 0L8.5 14.5Z"/></symbol>
   <symbol id="ic-neutral" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm-3 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm6 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm-5 5h4v2H10v-2Z"/></symbol>
   <symbol id="ic-sad" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm-3 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm6 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm-5.5 6a3.5 3.5 0 0 1 5 0L17 15.5a5.5 5.5 0 0 0-10 0L9.5 16Z"/></symbol>
@@ -64,6 +65,7 @@
       </div>
     </div>
     <div class="header-actions">
+      <button class="btn-icon mobile-only" id="menu-btn" onclick="toggleTabMenu()" title="Menu"><svg class="icon"><use href="#ic-menu"></use></svg></button>
       <button class="btn-icon" id="mute-btn" onclick="toggleMute()" title="Mute"><svg class="icon"><use href="#ic-mute"></use></svg></button>
       <button class="btn-icon" onclick="requestNotificationPermission()" title="Reminders"><svg class="icon"><use href="#ic-bell"></use></svg></button>
       <button class="btn-icon" onclick="switchTab('settings')" title="Settings"><svg class="icon"><use href="#ic-settings"></use></svg></button>
@@ -71,7 +73,7 @@
     </div>
   </header>
 
-  <div class="tabs">
+  <div class="tabs" id="tabs">
     <div class="tab active" onclick="switchTab('chat')" id="tab-chat"><svg class="icon"><use href="#ic-chat"></use></svg><span>Chat</span></div>
     <div class="tab" onclick="switchTab('planner')" id="tab-planner"><svg class="icon"><use href="#ic-calendar"></use></svg><span>Planner</span></div>
     <div class="tab" onclick="switchTab('journal')" id="tab-journal"><svg class="icon"><use href="#ic-journal"></use></svg><span>Journal</span></div>
@@ -326,8 +328,8 @@
               </div>
             </div>
             <div class="settings-row">
-              <div><div class="settings-label">ElevenLabs API Key <span style="color:var(--success);font-size:11px">Siri-quality voice</span></div><div class="settings-desc">Free tier at elevenlabs.io · 10k chars/month</div></div>
-              <input type="password" id="setting-elevenkey" placeholder="Optional" onchange="saveSetting('elevenLabsKey',this.value);loadElevenLabsVoices()">
+              <div><div class="settings-label">ElevenLabs API Key <span style="color:var(--success);font-size:11px">Siri-quality voice</span></div><div class="settings-desc">Supports multiple keys — separate with space or comma</div></div>
+              <input type="password" id="setting-elevenkey" placeholder="Paste one or many keys" onchange="saveSetting('elevenLabsKey',this.value);state.elevenKeyCursor=0;saveState();loadElevenLabsVoices()">
             </div>
           </div>
         </div>
@@ -421,7 +423,7 @@ let state = {
   userName:'', assistantName:'', apiKey:'', userBio:'',
   voiceEnabled:true, typewriterEnabled:true, remindersEnabled:false,
   selectedVoiceURI:'', voiceRate:1.0, voicePitch:1.0,
-  elevenLabsKey:'99edeacbb8f94734200573ff438f271f', elevenVoiceId:'21m00Tcm4TlvDq8ikWAM', voiceEngine:'elevenlabs',
+  elevenLabsKey:'99edeacbb8f94734200573ff438f271f', elevenVoiceId:'21m00Tcm4TlvDq8ikWAM', elevenKeyCursor:0, voiceEngine:'elevenlabs',
   provider:'bigmodel',
   bigModelKey:'0210af5bab1740e8a61732191ec368ca.z0telieFVSj5BbN6', bigModelModel:'glm-4.7', bigModelBase:'https://api.z.ai/api/paas/v4',
   geminiKey:'AIzaSyC9-SKbxtrN33RTVYZDLFfCsdlToO1rTa4', geminiModel:'gemini-1.5-flash-latest', geminiBase:'https://generativelanguage.googleapis.com/v1beta',
@@ -439,6 +441,12 @@ const themes = {
   midnight:{name:'Midnight Glow',mood:'Focus',desc:'Charcoal + gold pop',scheme:'dark',preview:['#0f0e17','#1a1826','#e8c547','#c084fc'],values:{
     bg:'#0f0e17',surface:'#1a1826',surface2:'#221f35',accent:'#e8c547',accent2:'#c084fc',text:'#fffffe',muted:'#a7a9be',danger:'#ff6b6b',success:'#6bffb8',border:'rgba(255,255,255,0.07)',glow:'rgba(232,197,71,0.2)'
   }},
+  gold:{name:'Gilded Noir',mood:'Lux',desc:'Black + gold',scheme:'dark',preview:['#0c0b0f','#18151f','#f2c94c','#f2994a'],values:{
+    bg:'#0c0b0f',surface:'#18151f',surface2:'#1f1a28',accent:'#f2c94c',accent2:'#f2994a',text:'#f8f5ec',muted:'#a19580',danger:'#ff6b6b',success:'#7ed957',border:'rgba(255,255,255,0.08)',glow:'rgba(242,201,76,0.22)'
+  }},
+  lavender:{name:'Lavender Haze',mood:'Soft',desc:'Lilac + periwinkle',scheme:'light',preview:['#f6f1ff','#e2d7ff','#9f8cff','#7c6ee6'],values:{
+    bg:'#f6f1ff',surface:'#ede4ff',surface2:'#e0d4ff',accent:'#9f8cff',accent2:'#7c6ee6',text:'#1f1534',muted:'#6b5c8a',danger:'#d95f8a',success:'#3ba58c',border:'rgba(31,21,52,0.12)',glow:'rgba(159,140,255,0.18)'
+  }},
   ocean:{name:'Aqua Bloom',mood:'Calm',desc:'Navy + aquamarine',scheme:'dark',preview:['#0b172a','#132b4c','#5fd1ff','#6fe2c5'],values:{
     bg:'#0b172a',surface:'#0f223a',surface2:'#132b4c',accent:'#5fd1ff',accent2:'#6fe2c5',text:'#e8f4ff',muted:'#9bb6d1',danger:'#ff8ba7',success:'#7ef5c4',border:'rgba(255,255,255,0.08)',glow:'rgba(95,209,255,0.18)'
   }},
@@ -451,8 +459,20 @@ const themes = {
   paper:{name:'Calm Paper',mood:'Clean',desc:'Soft gray + cobalt',scheme:'light',preview:['#f6f7fb','#e7eaf2','#3b82f6','#8b5cf6'],values:{
     bg:'#f6f7fb',surface:'#ffffff',surface2:'#e7eaf2',accent:'#3b82f6',accent2:'#8b5cf6',text:'#0f172a',muted:'#6b7280',danger:'#ef4444',success:'#10b981',border:'rgba(15,23,42,0.08)',glow:'rgba(59,130,246,0.18)'
   }},
+  cartoon:{name:'Cartoon Pop',mood:'Play',desc:'Cyan + coral',scheme:'light',preview:['#fef7e5','#ffe07a','#4adede','#ff6f61'],values:{
+    bg:'#fef7e5',surface:'#fff0c7',surface2:'#ffe07a',accent:'#4adede',accent2:'#ff6f61',text:'#1f2430',muted:'#5f6470',danger:'#ff4f4f',success:'#31b26f',border:'rgba(0,0,0,0.08)',glow:'rgba(74,222,222,0.22)'
+  }},
+  anime:{name:'Neon Anime',mood:'Vibe',desc:'Electric cyan + magenta',scheme:'dark',preview:['#0b1021','#151c35','#6df6ff','#ff64d6'],values:{
+    bg:'#0b1021',surface:'#151c35',surface2:'#1f2945',accent:'#6df6ff',accent2:'#ff64d6',text:'#f2f5ff',muted:'#9cb2d3',danger:'#ff5f8a',success:'#6ef7c8',border:'rgba(255,255,255,0.09)',glow:'rgba(255,100,214,0.22)'
+  }},
+  glass:{name:'Glass Frost',mood:'Calm',desc:'Watery glass · iOS vibe',scheme:'light',preview:['#dbe9ff','#c2e7ff','#7fd1c3','#6aa8ff'],values:{
+    bg:'#dbe9ff',surface:'rgba(255,255,255,0.30)',surface2:'rgba(255,255,255,0.20)',accent:'#7fd1c3',accent2:'#6aa8ff',text:'#0f172a',muted:'#4f6078',danger:'#ef476f',success:'#2ec4b6',border:'rgba(255,255,255,0.32)',glow:'rgba(122,184,255,0.25)'
+  }},
+  wood:{name:'Timber Warmth',mood:'Cozy',desc:'Walnut + amber',scheme:'dark',preview:['#0f0a07','#1b120d','#e0a458','#c9783a'],values:{
+    bg:'#0f0a07',surface:'#1b120d',surface2:'#24160f',accent:'#e0a458',accent2:'#c9783a',text:'#f6e7d4',muted:'#b8a08a',danger:'#e76f51',success:'#7bb77c',border:'rgba(255,255,255,0.06)',glow:'rgba(224,164,88,0.20)'
+  }},
 };
-const themeOrder = ['midnight','ocean','forest','sunrise','paper'];
+const themeOrder = ['midnight','gold','lavender','ocean','forest','sunrise','paper','cartoon','anime','glass','wood'];
 let currentDate = new Date();
 let isListening = false;
 let isMuted = false;
@@ -471,6 +491,7 @@ function init() {
       // Merge saved state, but never overwrite hardcoded keys with empty strings
       const defaults = {
         elevenLabsKey: '99edeacbb8f94734200573ff438f271f',
+        elevenKeyCursor: 0,
         theme: 'midnight',
         provider: 'bigmodel',
         bigModelKey:'0210af5bab1740e8a61732191ec368ca.z0telieFVSj5BbN6',
@@ -544,6 +565,8 @@ function applyTheme(key, skipSave=false) {
   const root = document.documentElement;
   Object.entries(theme.values).forEach(([k,v]) => root.style.setProperty(`--${k}`, v));
   root.style.colorScheme = theme.scheme || 'dark';
+  document.body.classList.toggle('theme-glass', key === 'glass');
+  document.body.classList.remove('menu-open');
   state.theme = key;
   if (!skipSave) saveState();
   markActiveTheme(key);
@@ -668,39 +691,62 @@ const ELEVEN_BUILT_IN = [
 
 let elevenVoicesLoaded = false;
 
+function getElevenKeys() {
+  const raw = state.elevenLabsKey || '';
+  // Allow users to paste multiple keys separated by spaces, commas, or newlines.
+  const keys = raw.split(/[\s,;]+/).map(k => k.trim()).filter(Boolean);
+  // Deduplicate to avoid retrying the same key.
+  return [...new Set(keys)];
+}
+
 async function loadElevenLabsVoices() {
-  const key = state.elevenLabsKey;
+  const keys = getElevenKeys();
   const list = document.getElementById('eleven-voice-list');
   if (!list) return;
 
   // Hide prompt if key is present
   const prompt = document.getElementById('eleven-key-prompt');
-  if (prompt) prompt.style.display = key ? 'none' : '';
+  if (prompt) prompt.style.display = keys.length ? 'none' : '';
 
-  if (!key) {
+  if (!keys.length) {
     renderElevenVoices(ELEVEN_BUILT_IN);
     return;
   }
 
   list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:8px">Loading voices from ElevenLabs…</div>';
-  try {
-    const res = await fetch('https://api.elevenlabs.io/v1/voices', {
-      headers: { 'xi-api-key': key }
-    });
-    if (!res.ok) throw new Error('API error ' + res.status);
-    const data = await res.json();
-    const voices = (data.voices || []).map(v => ({
-      id: v.voice_id,
-      name: v.name,
-      desc: v.labels?.description || v.labels?.accent || '',
-      accent: v.labels?.accent || ''
-    }));
-    elevenVoicesLoaded = true;
-    renderElevenVoices(voices.length ? voices : ELEVEN_BUILT_IN);
-  } catch(e) {
-    console.warn('Could not fetch ElevenLabs voices:', e);
-    renderElevenVoices(ELEVEN_BUILT_IN);
+  const start = state.elevenKeyCursor || 0;
+  let lastErr = null;
+
+  for (let i = 0; i < keys.length; i++) {
+    const idx = (start + i) % keys.length;
+    const key = keys[idx];
+    try {
+      const res = await fetch('https://api.elevenlabs.io/v1/voices', {
+        headers: { 'xi-api-key': key }
+      });
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const data = await res.json();
+      const voices = (data.voices || []).map(v => ({
+        id: v.voice_id,
+        name: v.name,
+        desc: v.labels?.description || v.labels?.accent || '',
+        accent: v.labels?.accent || ''
+      }));
+      elevenVoicesLoaded = true;
+      state.elevenKeyCursor = idx; // remember last working key
+      saveState();
+      renderElevenVoices(voices.length ? voices : ELEVEN_BUILT_IN);
+      return;
+    } catch (e) {
+      lastErr = e;
+      console.warn('Could not fetch ElevenLabs voices with provided key', idx, e);
+      continue;
+    }
   }
+
+  console.warn('Could not fetch ElevenLabs voices with any provided key:', lastErr);
+  renderElevenVoices(ELEVEN_BUILT_IN);
+  showToast('ElevenLabs voice list unavailable — showing built-in voices');
 }
 
 function renderElevenVoices(voices) {
@@ -1570,7 +1616,7 @@ async function speak(text) {
   const clean = text.replace(/<[^>]*>/g,'').replace(/[*_~`#]/g,'').substring(0, 800);
   if (!clean.trim()) return;
 
-  if (state.voiceEngine === 'elevenlabs' && state.elevenLabsKey) {
+  if (state.voiceEngine === 'elevenlabs' && getElevenKeys().length) {
     await speakElevenLabs(clean);
   } else {
     speakBrowser(clean);
@@ -1580,49 +1626,74 @@ async function speak(text) {
 let elevenAudio = null;
 
 async function speakElevenLabs(text) {
+  const keys = getElevenKeys();
+  if (!keys.length) {
+    showToast('Add an ElevenLabs key in Settings');
+    speakBrowser(text);
+    return;
+  }
+
   try {
     setAvatarState('speaking');
     if (elevenAudio) { elevenAudio.pause(); elevenAudio = null; }
 
     const voiceId = state.elevenVoiceId || '21m00Tcm4TlvDq8ikWAM';
     const url = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`;
+    const start = state.elevenKeyCursor || 0;
+    let lastError = null;
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'xi-api-key': state.elevenLabsKey,
-        'Content-Type': 'application/json',
-        'Accept': 'audio/mpeg'
-      },
-      body: JSON.stringify({
-        text,
-        model_id: 'eleven_turbo_v2_5',
-        voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.3, use_speaker_boost: true }
-      })
-    });
+    for (let i = 0; i < keys.length; i++) {
+      const idx = (start + i) % keys.length;
+      const key = keys[idx];
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'xi-api-key': key,
+            'Content-Type': 'application/json',
+            'Accept': 'audio/mpeg'
+          },
+          body: JSON.stringify({
+            text,
+            model_id: 'eleven_turbo_v2_5',
+            voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.3, use_speaker_boost: true }
+          })
+        });
 
-    if (!res.ok) {
-      const err = await res.json().catch(()=>({}));
-      console.error('ElevenLabs error detail:', JSON.stringify(err));
-      console.error('ElevenLabs key used:', state.elevenLabsKey ? state.elevenLabsKey.substring(0,10)+'...' : 'EMPTY');
-      showToast('ElevenLabs error — falling back to browser voice');
-      speakBrowser(text);
-      setAvatarState('idle');
-      return;
+        if (!res.ok) {
+          const err = await res.json().catch(()=>({ status: res.status }));
+          lastError = err;
+          console.error('ElevenLabs error detail (key idx ' + idx + '):', JSON.stringify(err));
+          continue;
+        }
+
+        const blob = await res.blob();
+        const objUrl = URL.createObjectURL(blob);
+        elevenAudio = new Audio(objUrl);
+        elevenAudio.playbackRate = Math.min(state.voiceRate || 1, 2);
+        elevenAudio.onended = () => { setAvatarState('idle'); URL.revokeObjectURL(objUrl); };
+        elevenAudio.onerror = (e) => {
+          console.warn('Audio playback error:', e);
+          setAvatarState('idle');
+          URL.revokeObjectURL(objUrl);
+          speakBrowser(text);
+        };
+        state.elevenKeyCursor = idx; // remember which key worked
+        saveState();
+        await elevenAudio.play();
+        return;
+
+      } catch (e) {
+        lastError = e;
+        console.warn('ElevenLabs TTS request failed (key idx ' + idx + '):', e);
+        continue;
+      }
     }
 
-    const blob = await res.blob();
-    const objUrl = URL.createObjectURL(blob);
-    elevenAudio = new Audio(objUrl);
-    elevenAudio.playbackRate = Math.min(state.voiceRate || 1, 2);
-    elevenAudio.onended = () => { setAvatarState('idle'); URL.revokeObjectURL(objUrl); };
-    elevenAudio.onerror = (e) => {
-      console.warn('Audio playback error:', e);
-      setAvatarState('idle');
-      URL.revokeObjectURL(objUrl);
-      speakBrowser(text);
-    };
-    await elevenAudio.play();
+    console.error('ElevenLabs TTS failed across all keys. Last error:', lastError);
+    showToast('ElevenLabs unavailable — using browser voice');
+    setAvatarState('idle');
+    speakBrowser(text);
 
   } catch(e) {
     console.error('ElevenLabs TTS failed:', e);
@@ -1855,10 +1926,14 @@ function checkDailyReminder() {
 //  TABS & UTILS
 // ═══════════════════════════
 function switchTab(tab) {
+  document.body.classList.remove('menu-open');
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
   document.getElementById('panel-'+tab).classList.add('active');
+}
+function toggleTabMenu() {
+  document.body.classList.toggle('menu-open');
 }
 function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
 function showToast(msg) {
