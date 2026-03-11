@@ -96,7 +96,19 @@
   <div class="content">
 
     <!-- CHAT -->
-    <div class="tab-panel active" id="panel-chat" style="padding:0;display:flex;flex-direction:column;">
+  <div class="tab-panel active" id="panel-chat" style="padding:0;display:flex;flex-direction:column;">
+      <div class="doc-drop" id="doc-drop"
+           ondragover="event.preventDefault();this.classList.add('dragging');"
+           ondragleave="this.classList.remove('dragging');"
+           ondrop="handleDocDrop(event)">
+        <div>Drop PDF/Doc here or <label class="link-label"><input type="file" accept=".pdf,.txt,.md,.doc,.docx" style="display:none" onchange="handleDocFile(this.files[0])">browse</label></div>
+        <div class="doc-meta" id="doc-meta">No documents cached</div>
+        <div class="doc-qa">
+          <select id="doc-select"></select>
+          <input type="text" id="doc-question" placeholder="Ask about this document" onkeydown="if(event.key==='Enter')askDocQuestion()">
+          <button class="btn-primary" style="padding:10px 14px;font-size:13px" onclick="askDocQuestion()">Ask</button>
+        </div>
+      </div>
       <div class="chat-messages" id="chat-messages"></div>
       <div class="listen-bar" id="listen-bar"></div>
       <div class="chat-input-area">
@@ -126,6 +138,20 @@
           <button class="mood-btn" data-mood="fire" onclick="setMood(this,'fire')" title="On fire">🔥</button>
           <button class="mood-btn" data-mood="sleep" onclick="setMood(this,'sleep')" title="Tired">😴</button>
         </div>
+      </div>
+      <div class="habits-card">
+        <div class="section-title">Habits</div>
+        <div class="section-sub">Daily/weekly streaks — don’t break the chain</div>
+        <div class="habit-add">
+          <input type="text" id="habit-name" placeholder="Add a habit (e.g. Stretch)" onkeydown="if(event.key==='Enter')addHabit()">
+          <select id="habit-frequency">
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+          </select>
+          <button class="btn-primary" style="padding:10px 16px;font-size:13px" onclick="addHabit()">Add</button>
+        </div>
+        <div id="habit-list"></div>
+        <div id="habit-heatmap" class="habit-heatmap"></div>
       </div>
       <div class="add-task-row">
         <input type="text" id="new-task" placeholder="Add a task…" onkeydown="if(event.key==='Enter')addTask()">
@@ -446,7 +472,8 @@ let state = {
   mistralKey:'Y9MTZSYZ7Q7UUkYxJiEr5xMokGUeVS90', mistralModel:'mistral-large-latest', mistralBase:'https://api.mistral.ai/v1',
   openRouterKey:'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', openRouterModel:'meta-llama-3.1-8b-instruct', openRouterBase:'https://openrouter.ai/api/v1',
   theme:'midnight',
-  chatHistory:[], tasks:{}, journal:[], mood:{}, memories:[], syncQueue:[]
+  chatHistory:[], tasks:{}, journal:[], mood:{}, memories:[], syncQueue:[],
+  habits:[], habitLogs:{}, docIndex:[]
 };
 const themes = {
   midnight:{name:'Midnight Glow',mood:'Focus',desc:'Charcoal + gold pop',scheme:'dark',preview:['#0f0e17','#1a1826','#e8c547','#c084fc'],values:{
@@ -572,6 +599,8 @@ function init() {
   attemptSync();
   window.addEventListener('online', attemptSync);
   window.addEventListener('offline', updateSyncUI);
+  renderHabits();
+  renderHeatmap();
 }
 
 function saveState() { localStorage.setItem('pa_state', JSON.stringify(state)); }
@@ -733,6 +762,80 @@ function updateAutoThemeUI() {
   if (!btn) return;
   btn.classList.toggle('active', !!state.autoTheme);
   btn.textContent = state.autoTheme ? 'Auto Day/Night: ON' : 'Auto Day/Night: OFF';
+}
+
+// DOCUMENT Q&A
+let docDB = null;
+function openDocDB() {
+  return new Promise((resolve,reject)=>{
+    if (docDB) return resolve(docDB);
+    const req = indexedDB.open('assistant-docs',1);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if(!db.objectStoreNames.contains('docs')) db.createObjectStore('docs',{keyPath:'id'});
+    };
+    req.onsuccess = e=>{docDB=e.target.result;resolve(docDB);};
+    req.onerror = e=>reject(e.target.error);
+  });
+}
+async function handleDocDrop(e){
+  e.preventDefault(); e.currentTarget.classList.remove('dragging');
+  if(!e.dataTransfer.files.length) return;
+  await handleDocFile(e.dataTransfer.files[0]);
+}
+async function handleDocFile(file){
+  if(!file) return;
+  const text = await readFileText(file);
+  const id = Date.now()+'-'+file.name;
+  await saveDoc({id,name:file.name,text});
+  state.docIndex.push({id,name:file.name});
+  saveState();
+  showToast(`Cached ${file.name}`);
+  renderDocSelect();
+}
+function readFileText(file){
+  return new Promise((resolve,reject)=>{
+    const r = new FileReader();
+    r.onload = ()=>resolve(r.result);
+    r.onerror = reject;
+    r.readAsText(file);
+  });
+}
+async function saveDoc(doc){
+  const db = await openDocDB();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction('docs','readwrite');
+    tx.objectStore('docs').put(doc);
+    tx.oncomplete=resolve; tx.onerror=e=>reject(e.target.error);
+  });
+}
+async function loadDoc(id){
+  const db = await openDocDB();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction('docs','readonly');
+    const req = tx.objectStore('docs').get(id);
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=e=>reject(e.target.error);
+  });
+}
+function renderDocSelect(){
+  const sel = document.getElementById('doc-select');
+  const meta = document.getElementById('doc-meta');
+  if(!sel) return;
+  sel.innerHTML = (state.docIndex||[]).map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
+  if (meta) meta.textContent = state.docIndex?.length ? `${state.docIndex.length} docs cached` : 'No documents cached';
+}
+async function askDocQuestion(){
+  const sel = document.getElementById('doc-select');
+  const q = document.getElementById('doc-question').value.trim();
+  if(!sel||!q||!sel.value){showToast('Select a document and ask a question');return;}
+  const doc = await loadDoc(sel.value);
+  if(!doc){showToast('Document missing');return;}
+  const snippet = doc.text.slice(0,8000);
+  addMessage('user',`[Doc: ${doc.name}] ${q}`);
+  const prompt = `Use this document to answer:\n---\n${snippet}\n---\nQuestion: ${q}\nIf info is missing, say so briefly.`;
+  const reply = await callAI([{role:'user',content:prompt}],false,buildSystemPrompt());
+  addMessage('assistant', reply);
 }
 
 // ═══════════════════════════
@@ -1006,6 +1109,7 @@ function loadSettingsUI() {
   renderThemeGrid();
   markActiveTheme(state.theme || 'midnight');
   updateAutoThemeUI();
+  renderDocSelect();
   updateProviderUI();
   // Init voice engine UI
   switchVoiceEngine(state.voiceEngine || 'elevenlabs');
@@ -1937,6 +2041,81 @@ function renderTasks() {
     <span class="task-category cat-${t.category}">${t.category}</span>
     <button class="task-delete" onclick="deleteTask(${t.id})">x</button>
   </div>`).join('');
+  renderHabits();
+}
+
+// HABITS
+function addHabit() {
+  const name = document.getElementById('habit-name').value.trim();
+  const freq = document.getElementById('habit-frequency').value;
+  if (!name) return;
+  const habit = {id:Date.now(), name, freq, streak:0, lastDone:null};
+  state.habits.push(habit);
+  saveState(); renderHabits(); renderHeatmap();
+  document.getElementById('habit-name').value='';
+}
+function markHabit(id) {
+  const today = getTodayKey();
+  const h = state.habits.find(x=>x.id===id);
+  if (!h) return;
+  if(!state.habitLogs[today]) state.habitLogs[today]=[];
+  if(!state.habitLogs[today].includes(id)) state.habitLogs[today].push(id);
+  updateStreak(h, today);
+  saveState(); renderHabits(); renderHeatmap();
+}
+function updateStreak(habit, todayKey) {
+  const logs = state.habitLogs;
+  const daysBack = habit.freq === 'daily' ? 60 : 120;
+  let streak = 0;
+  const today = new Date(todayKey);
+  for (let i=0;i<daysBack;i++) {
+    const d = new Date(today); d.setDate(today.getDate()-i);
+    const key = getDateKey(d);
+    const done = logs[key]?.includes(habit.id);
+    if (habit.freq === 'daily') {
+      if (done) streak++; else break;
+    } else { // weekly
+      const week = getWeekKey(d);
+      if (done) { streak++; break; } // credit once per week
+      if (week !== getWeekKey(today)) break;
+    }
+  }
+  habit.streak = streak;
+  habit.lastDone = todayKey;
+}
+function getWeekKey(d) {
+  const dt = new Date(d);
+  dt.setHours(0,0,0,0);
+  const onejan = new Date(dt.getFullYear(),0,1);
+  return dt.getFullYear()+'-W'+Math.ceil((((dt - onejan)/86400000) + onejan.getDay()+1)/7);
+}
+function renderHabits() {
+  const box = document.getElementById('habit-list'); if (!box) return;
+  if (!state.habits.length) { box.innerHTML = '<div class="muted">No habits yet</div>'; }
+  else {
+    box.innerHTML = state.habits.map(h=>{
+      return `<div class="habit-row">
+        <div>
+          <div class="habit-name">${h.name}</div>
+          <div class="habit-sub">${h.freq} · Streak ${h.streak||0}</div>
+        </div>
+        <button class="btn-secondary" onclick="markHabit(${h.id})">Done</button>
+      </div>`;
+    }).join('');
+  }
+}
+function renderHeatmap() {
+  const map = document.getElementById('habit-heatmap'); if (!map) return;
+  const today = new Date();
+  let cells = '';
+  for(let i=29;i>=0;i--){
+    const d = new Date(today); d.setDate(today.getDate()-i);
+    const key = getDateKey(d);
+    const count = state.habitLogs[key]?.length || 0;
+    const level = count>2?3:count>1?2:count>0?1:0;
+    cells += `<div class="heat-cell level-${level}" title="${key}: ${count} done"></div>`;
+  }
+  map.innerHTML = cells;
 }
 
 // ═══════════════════════════
@@ -2038,6 +2217,7 @@ function logoutApp() {
 
 window.addEventListener('load', init);
 window.addEventListener('load', updateChatEmpty);
+window.addEventListener('load', renderHeatmap);
 window.addEventListener('resize', ()=>{ if(window.innerWidth>760){ document.body.classList.remove('menu-open'); document.getElementById('mobile-drawer')?.classList.remove('open'); }});
 
 // Show banner if opened as file:// (ElevenLabs needs HTTP)

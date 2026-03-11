@@ -213,6 +213,13 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
 
 /* CHAT */
 #panel-chat{padding:0;}
+.doc-drop{border:1px dashed var(--border);border-radius:12px;padding:12px 14px;margin:12px;background:var(--surface2);color:var(--muted);display:flex;flex-direction:column;gap:10px;}
+.doc-drop.dragging{border-color:var(--accent);color:var(--accent);}
+.doc-qa{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.doc-qa select{min-width:160px;padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);}
+.doc-qa input{flex:1;min-width:200px;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);}
+.link-label{color:var(--accent);cursor:pointer;}
+.doc-meta{font-size:12px;color:var(--muted);}
 .chat-messages{flex:1;overflow-y:auto;padding:20px 22px;display:flex;flex-direction:column;gap:14px;position:relative;}
 .message{display:flex;gap:10px;animation:msg-in 0.3s ease;}
 @keyframes msg-in{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
@@ -347,6 +354,18 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
 .mood-options{display:flex;gap:7px;}
 .mood-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:5px 9px;cursor:pointer;transition:all 0.2s;}
 .mood-btn:hover,.mood-btn.selected{border-color:var(--accent);transform:scale(1.05);}
+.habits-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.habit-add{display:flex;gap:8px;flex-wrap:wrap;}
+.habit-add input{flex:1;min-width:160px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--text);}
+.habit-add select{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--text);}
+.habit-row{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:6px;}
+.habit-name{font-weight:600;}
+.habit-sub{font-size:12px;color:var(--muted);}
+.habit-heatmap{display:grid;grid-template-columns:repeat(30,1fr);gap:3px;margin-top:12px;}
+.heat-cell{width:12px;height:12px;border-radius:3px;background:rgba(255,255,255,0.08);}
+.heat-cell.level-1{background:#60a5fa;}
+.heat-cell.level-2{background:#2563eb;}
+.heat-cell.level-3{background:#1d4ed8;}
 
 /* JOURNAL */
 .journal-entry-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
