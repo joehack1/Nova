@@ -31,9 +31,10 @@
 
 <!-- SETUP -->
 <div id="setup-screen">
+  <img src="my%20logo.jpg" alt="Brand logo" class="brand-logo" loading="lazy">
   <h1>Your Personal Assistant</h1>
   <p>Set up your AI companion — it remembers everything, plans your days, speaks to you, and is always there.</p>
-    <div class="setup-card">
+  <div class="setup-card">
     <div><label>Your Name</label><input type="text" id="user-name" placeholder="e.g. Alex" style="margin-top:8px"></div>
     <div><label>Name Your Assistant</label><input type="text" id="assistant-name" placeholder="e.g. Aria, Max, Nova…" style="margin-top:8px"></div>
     <div><label>Tell your assistant about you</label><textarea id="user-bio" rows="3" placeholder="I'm a teacher, I love hiking, I have two cats…" style="margin-top:8px;resize:vertical"></textarea></div>
@@ -62,6 +63,9 @@
         <div class="name" id="header-name">Assistant</div>
         <div class="status"><div class="status-dot"></div><span id="status-text">Ready</span></div>
       </div>
+    </div>
+    <div class="dashboard-video">
+      <video src="vid.mp4" autoplay muted loop playsinline aria-label="Brand loop"></video>
     </div>
     <div class="header-actions">
       <button class="btn-icon mobile-only" id="menu-btn" onclick="toggleTabMenu()" title="Menu"><svg class="icon"><use href="#ic-menu"></use></svg></button>

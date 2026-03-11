@@ -14,7 +14,7 @@ A single-page, front-end–only AI companion that runs entirely in the browser. 
 - Install a modern desktop browser (Chrome/Edge recommended; Safari speech support varies).
 - Start a local web server from the project root (avoids `file://` CORS blocks):
   - `python -m http.server 8000`
-- Open `http://localhost:8000/my-assistant.html`.
+- Open `http://localhost:8000/index.html`.
 - Complete the setup screen (your name, assistant name, primary model key).
 - Open **Settings → API Keys** to paste credentials for any provider you plan to use.
 - Allow microphone/notification permissions when prompted if you want voice or reminders.
@@ -26,7 +26,7 @@ The assistant can route requests to several providers; configure only the ones y
 - OpenRouter, GitHub Models, Public AI, Wisdom Gate, Mistral
 - ElevenLabs for TTS (or switch to browser voices in Settings → Speech)
 
-Credentials are stored locally in `localStorage` and used only in client-side `fetch` calls. Do not commit real keys to version control. If the starter file contains sample keys in `my-assistant.html`, replace them with blanks or your own values before publishing and rotate any previously exposed keys.
+Credentials are stored locally in `localStorage` and used only in client-side `fetch` calls. Do not commit real keys to version control. If the starter file contains sample keys in `index.html`, replace them with blanks or your own values before publishing and rotate any previously exposed keys.
 
 ## Data & Privacy
 - Local persistence: `pa_state` in `localStorage` keeps chat history, tasks, journal, mood, settings, and API keys.
@@ -34,18 +34,18 @@ Credentials are stored locally in `localStorage` and used only in client-side `f
 - Reminders use the browser Notification API; nothing is sent to external servers besides your chosen model/TTS endpoints.
 
 ## Project Layout
-- `my-assistant.html` — markup, styling hooks, and all app logic (vanilla JS).
+- `index.html` — markup, styling hooks, and all app logic (vanilla JS).
 - `app.css` — theme tokens, layout, animations, and component styles.
 There is no build step or external dependencies beyond browser APIs and the provider endpoints you configure.
 
 ## Development Tips
 - Keep running through `http://localhost` to avoid blocked cross-origin requests.
-- Most logic lives in the bottom `<script>` of `my-assistant.html`; theme tokens are centralized in `app.css`.
+- Most logic lives in the bottom `<script>` of `index.html`; theme tokens are centralized in `app.css`.
 - When editing provider calls, ensure CORS is permitted by your chosen endpoint and that you pass the right auth headers.
 
 ## Deployment
 - Host as static files on any HTTPS-capable server or CDN.
-- For public deployments, strip any default/demo keys from `my-assistant.html` and rely on runtime entry via Settings.
+- For public deployments, strip any default/demo keys from `index.html` and rely on runtime entry via Settings.
 - If you disable microphone or notifications in the browser, related features will gracefully degrade.
 
 ## Troubleshooting
