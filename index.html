@@ -109,6 +109,15 @@
           <button class="btn-primary" style="padding:10px 14px;font-size:13px" onclick="askDocQuestion()">Ask</button>
         </div>
       </div>
+      <div class="clipboard-actions" id="clipboard-actions" style="display:none">
+        <div class="clip-label">Clipboard detected</div>
+        <div class="clip-buttons">
+          <button class="pill-btn" onclick="useClipboardAction('summary')">Summarize</button>
+          <button class="pill-btn" onclick="useClipboardAction('rephrase')">Rephrase</button>
+          <button class="pill-btn" onclick="useClipboardAction('tasks')">Extract tasks</button>
+          <button class="pill-btn" onclick="hideClipboardActions()">Dismiss</button>
+        </div>
+      </div>
       <div class="chat-messages" id="chat-messages"></div>
       <div class="listen-bar" id="listen-bar"></div>
       <div class="chat-input-area">
@@ -473,7 +482,7 @@ let state = {
   openRouterKey:'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', openRouterModel:'meta-llama-3.1-8b-instruct', openRouterBase:'https://openrouter.ai/api/v1',
   theme:'midnight',
   chatHistory:[], tasks:{}, journal:[], mood:{}, memories:[], syncQueue:[],
-  habits:[], habitLogs:{}, docIndex:[]
+  habits:[], habitLogs:{}, docIndex:[], clipboardCache:''
 };
 const themes = {
   midnight:{name:'Midnight Glow',mood:'Focus',desc:'Charcoal + gold pop',scheme:'dark',preview:['#0f0e17','#1a1826','#e8c547','#c084fc'],values:{
@@ -1114,6 +1123,7 @@ function loadSettingsUI() {
   // Init voice engine UI
   switchVoiceEngine(state.voiceEngine || 'elevenlabs');
   loadElevenLabsVoices();
+  initClipboardWatcher();
 }
 
 // ═══════════════════════════
@@ -2202,6 +2212,39 @@ function toggleTabMenu() {
   const drawer = document.getElementById('mobile-drawer');
   if (drawer) drawer.classList.toggle('open');
 }
+
+// CLIPBOARD SMART CATCH
+function initClipboardWatcher(){
+  document.addEventListener('paste', e=>{
+    const text = e.clipboardData?.getData('text');
+    if (text && text.length > 40) { // ignore tiny pastes
+      state.clipboardCache = text.slice(0,4000);
+      saveState();
+      showClipboardActions();
+    }
+  });
+}
+function showClipboardActions(){
+  const panel = document.getElementById('clipboard-actions');
+  if (!panel) return;
+  panel.style.display = 'flex';
+}
+function hideClipboardActions(){
+  const panel = document.getElementById('clipboard-actions');
+  if (panel) panel.style.display = 'none';
+}
+function useClipboardAction(action){
+  const text = state.clipboardCache || '';
+  if (!text) { showToast('Nothing in clipboard cache'); return; }
+  let prompt = '';
+  if (action==='summary') prompt = `Summarize clearly in bullets:\n${text}`;
+  if (action==='rephrase') prompt = `Rewrite more concise and clear:\n${text}`;
+  if (action==='tasks') prompt = `Extract actionable tasks with due dates if implied. Format as bullet list:\n${text}`;
+  addMessage('user', `[Clipboard] ${action}: ${text.substring(0,200)}...`);
+  callAI([{role:'user',content:prompt}],false,buildSystemPrompt()).then(r=>addMessage('assistant', r));
+  hideClipboardActions();
+}
+
 function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
 function showToast(msg) {
   const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
