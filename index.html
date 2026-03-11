@@ -60,14 +60,15 @@
           <div class="think-ripple" id="ripple2"></div>
         </div>
       </div>
-      <div class="assistant-name-wrap">
-        <div class="name" id="header-name">Assistant</div>
-        <div class="status"><div class="status-dot"></div><span id="status-text">Ready</span></div>
-      </div>
-      <div class="talk-video">
-        <video src="vid.mp4" autoplay muted loop playsinline aria-label="Assistant idle loop"></video>
-      </div>
-    </div>
+  <div class="assistant-name-wrap">
+    <div class="name" id="header-name">Assistant</div>
+    <div class="status"><div class="status-dot"></div><span id="status-text">Ready</span></div>
+  </div>
+  <div class="talk-video">
+    <video src="vid.mp4" autoplay muted loop playsinline aria-label="Assistant idle loop"></video>
+  </div>
+  <div class="sync-pill" id="sync-pill">Offline</div>
+</div>
     <div class="header-actions">
       <button class="btn-icon mobile-only" id="menu-btn" onclick="toggleTabMenu()" title="Menu"><svg class="icon"><use href="#ic-menu"></use></svg></button>
       <button class="btn-icon" id="mute-btn" onclick="toggleMute()" title="Mute"><svg class="icon"><use href="#ic-mute"></use></svg></button>
@@ -442,7 +443,7 @@ let state = {
   mistralKey:'Y9MTZSYZ7Q7UUkYxJiEr5xMokGUeVS90', mistralModel:'mistral-large-latest', mistralBase:'https://api.mistral.ai/v1',
   openRouterKey:'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', openRouterModel:'meta-llama-3.1-8b-instruct', openRouterBase:'https://openrouter.ai/api/v1',
   theme:'midnight',
-  chatHistory:[], tasks:{}, journal:[], mood:{}, memories:[]
+  chatHistory:[], tasks:{}, journal:[], mood:{}, memories:[], syncQueue:[]
 };
 const themes = {
   midnight:{name:'Midnight Glow',mood:'Focus',desc:'Charcoal + gold pop',scheme:'dark',preview:['#0f0e17','#1a1826','#e8c547','#c084fc'],values:{
@@ -562,11 +563,47 @@ function init() {
 
   updateDateDisplay();
   checkDailyReminder();
+  attemptSync();
+  window.addEventListener('online', attemptSync);
+  window.addEventListener('offline', updateSyncUI);
 }
 
 function saveState() { localStorage.setItem('pa_state', JSON.stringify(state)); }
 function saveSetting(k, v) { state[k] = v; saveState(); }
 function toggleSetting(k, el) { state[k] = !state[k]; el.classList.toggle('on', state[k]); saveState(); }
+function enqueueSync(kind, action, payload) {
+  const item = {id: Date.now()+'-'+Math.random().toString(16).slice(2), kind, action, payload, ts: Date.now()};
+  state.syncQueue = state.syncQueue || [];
+  state.syncQueue.push(item);
+  saveState();
+  updateSyncUI();
+  attemptSync();
+}
+function attemptSync() {
+  if (!navigator.onLine) { updateSyncUI(); return; }
+  const queue = state.syncQueue || [];
+  if (!queue.length) { updateSyncUI(); return; }
+  const count = queue.length;
+  state.syncQueue = [];
+  saveState();
+  showToast(`Synced ${count} item${count>1?'s':''}`);
+  updateSyncUI();
+}
+function updateSyncUI() {
+  const el = document.getElementById('sync-pill');
+  if (!el) return;
+  const pending = state.syncQueue?.length || 0;
+  if (!navigator.onLine) {
+    el.textContent = 'Offline';
+    el.className = 'sync-pill offline';
+  } else if (pending) {
+    el.textContent = `Pending ${pending}`;
+    el.className = 'sync-pill pending';
+  } else {
+    el.textContent = 'Synced';
+    el.className = 'sync-pill';
+  }
+}
 function applyTheme(key, skipSave=false) {
   const theme = themes[key] || themes.midnight;
   const root = document.documentElement;
@@ -1817,15 +1854,16 @@ function addTask() {
   const name = document.getElementById('new-task').value.trim(); if(!name) return;
   const key = getDateKey(currentDate);
   if(!state.tasks[key]) state.tasks[key]=[];
-  state.tasks[key].push({id:Date.now(),name,time:document.getElementById('task-time').value,category:document.getElementById('task-cat').value,done:false});
+  const task = {id:Date.now(),name,time:document.getElementById('task-time').value,category:document.getElementById('task-cat').value,done:false};
+  state.tasks[key].push(task);
   document.getElementById('new-task').value=''; document.getElementById('task-time').value='';
-  saveState(); renderTasks(); showToast('Task added');
+  saveState(); enqueueSync('task','add',{date:key, task}); renderTasks(); showToast('Task added');
 }
 
 function toggleTask(id) {
   const key = getDateKey(currentDate), task = state.tasks[key]?.find(t=>t.id===id);
   if (!task) return;
-  task.done = !task.done; saveState(); renderTasks();
+  task.done = !task.done; saveState(); enqueueSync('task','toggle',{date:key,id,done:task.done}); renderTasks();
   if (task.done) {
     setTimeout(()=>{
       switchTab('chat');
@@ -1838,7 +1876,7 @@ function toggleTask(id) {
 function deleteTask(id) {
   const key = getDateKey(currentDate);
   state.tasks[key] = state.tasks[key]?.filter(t=>t.id!==id)||[];
-  saveState(); renderTasks();
+  saveState(); enqueueSync('task','delete',{date:key,id}); renderTasks();
 }
 
 function setMood(btn, moodVal) {
@@ -1869,7 +1907,7 @@ function saveJournalEntry() {
   state.journal.unshift(entry);
   if(state.journal.length>100) state.journal=state.journal.slice(0,80);
   state.memories.push(`Journal ${entry.date}: ${text.substring(0,200)}`);
-  saveState(); document.getElementById('journal-text').value=''; renderJournal(); showToast('Entry saved');
+  saveState(); enqueueSync('journal','add',entry); document.getElementById('journal-text').value=''; renderJournal(); showToast('Entry saved');
 }
 
 async function analyzeJournalWithAI() {
