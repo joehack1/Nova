@@ -80,6 +80,14 @@
     <div class="tab" onclick="switchTab('settings')" id="tab-settings"><svg class="icon"><use href="#ic-settings"></use></svg><span>Settings</span></div>
   </div>
 
+  <!-- Mobile drawer nav -->
+  <div class="mobile-drawer" id="mobile-drawer">
+    <button class="drawer-item" onclick="switchTab('chat')"><svg class="icon"><use href="#ic-chat"></use></svg><span>Chat</span></button>
+    <button class="drawer-item" onclick="switchTab('planner')"><svg class="icon"><use href="#ic-calendar"></use></svg><span>Planner</span></button>
+    <button class="drawer-item" onclick="switchTab('journal')"><svg class="icon"><use href="#ic-journal"></use></svg><span>Journal</span></button>
+    <button class="drawer-item" onclick="switchTab('settings')"><svg class="icon"><use href="#ic-settings"></use></svg><span>Settings</span></button>
+  </div>
+
   <div class="content">
 
     <!-- CHAT -->
@@ -1927,6 +1935,7 @@ function checkDailyReminder() {
 // ═══════════════════════════
 function switchTab(tab) {
   document.body.classList.remove('menu-open');
+  document.getElementById('mobile-drawer')?.classList.remove('open');
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
@@ -1934,6 +1943,8 @@ function switchTab(tab) {
 }
 function toggleTabMenu() {
   document.body.classList.toggle('menu-open');
+  const drawer = document.getElementById('mobile-drawer');
+  if (drawer) drawer.classList.toggle('open');
 }
 function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
 function showToast(msg) {
@@ -1949,6 +1960,7 @@ function logoutApp() {
 }
 
 window.addEventListener('load', init);
+window.addEventListener('resize', ()=>{ if(window.innerWidth>760){ document.body.classList.remove('menu-open'); document.getElementById('mobile-drawer')?.classList.remove('open'); }});
 
 // Show banner if opened as file:// (ElevenLabs needs HTTP)
 if (location.protocol === 'file:') {
