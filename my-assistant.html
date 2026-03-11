@@ -33,10 +33,9 @@
 <div id="setup-screen">
   <h1>Your Personal Assistant</h1>
   <p>Set up your AI companion — it remembers everything, plans your days, speaks to you, and is always there.</p>
-  <div class="setup-card">
+    <div class="setup-card">
     <div><label>Your Name</label><input type="text" id="user-name" placeholder="e.g. Alex" style="margin-top:8px"></div>
     <div><label>Name Your Assistant</label><input type="text" id="assistant-name" placeholder="e.g. Aria, Max, Nova…" style="margin-top:8px"></div>
-    <div><label>Anthropic API Key <small style="color:var(--accent);font-size:11px">(free at console.anthropic.com)</small></label><input type="password" id="api-key-setup" placeholder="sk-ant-…" style="margin-top:8px"></div>
     <div><label>Tell your assistant about you</label><textarea id="user-bio" rows="3" placeholder="I'm a teacher, I love hiking, I have two cats…" style="margin-top:8px;resize:vertical"></textarea></div>
     <button class="btn-primary" onclick="setupAssistant()">Meet My Assistant →</button>
   </div>
@@ -164,7 +163,7 @@
           <div class="card-body">
             <div class="settings-row"><div><div class="settings-label">Your Name</div></div><input type="text" id="setting-username" onchange="saveSetting('userName',this.value);updateUI()"></div>
             <div class="settings-row"><div><div class="settings-label">Assistant Name</div></div><input type="text" id="setting-assistantname" onchange="saveSetting('assistantName',this.value);updateUI()"></div>
-            <div class="settings-row"><div><div class="settings-label">About You</div></div><input type="text" id="setting-bio" style="min-width:230px" onchange="saveSetting('userBio',this.value)"></div>
+            <div class="settings-row"><div><div class="settings-label">About You</div></div><textarea id="setting-bio" rows="4" style="min-width:230px;min-height:96px" onchange="saveSetting('userBio',this.value)"></textarea></div>
           </div>
         </div>
 
@@ -202,12 +201,6 @@
                 <button class="pill-btn" id="provider-mis" onclick="setProvider('mistral')">Mistral</button>
                 <button class="pill-btn" id="provider-anth" onclick="setProvider('anthropic')">Anthropic</button>
               </div>
-            </div>
-            <div id="anthropic-fields">
-            <div class="settings-row">
-              <div><div class="settings-label">Anthropic API Key</div><div class="settings-desc">Get yours free at console.anthropic.com</div></div>
-              <input type="password" id="setting-apikey" onchange="saveSetting('apiKey',this.value)">
-            </div>
             </div>
             <div id="groq-fields">
               <div class="settings-row">
@@ -540,7 +533,7 @@ function init() {
   if (state.provider === 'ollama') { state.provider = 'bigmodel'; saveState(); }
 
   applyTheme(state.theme || 'midnight', true);
-  if (state.userName && state.assistantName && state.apiKey) showApp();
+  if (state.userName && state.assistantName) showApp();
 
   // Speech recognition
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -881,10 +874,9 @@ function previewVoice(uri) {
 function setupAssistant() {
   const name  = document.getElementById('user-name').value.trim();
   const aName = document.getElementById('assistant-name').value.trim();
-  const key   = document.getElementById('api-key-setup').value.trim();
   const bio   = document.getElementById('user-bio').value.trim();
-  if (!name||!aName||!key) { showToast('Please fill your name, assistant name & API key!'); return; }
-  Object.assign(state, {userName:name, assistantName:aName, apiKey:key, userBio:bio});
+  if (!name||!aName) { showToast('Please fill your name and assistant name'); return; }
+  Object.assign(state, {userName:name, assistantName:aName, userBio:bio});
   saveState(); showApp();
   setTimeout(addSystemGreeting, 700);
 }
@@ -905,7 +897,6 @@ function updateUI() {
 function loadSettingsUI() {
   document.getElementById('setting-username').value = state.userName;
   document.getElementById('setting-assistantname').value = state.assistantName;
-  document.getElementById('setting-apikey').value = state.apiKey||'';
   document.getElementById('setting-bio').value = state.userBio||'';
   document.getElementById('setting-elevenkey').value = state.elevenLabsKey||'';
   document.getElementById('setting-gemini-key').value = state.geminiKey||'';
