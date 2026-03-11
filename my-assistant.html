@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Personal Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <symbol id="ic-chat" viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H7.5L4 20.5V5a1 1 0 0 1 1-1Zm1 2v10.086L6.586 15H19V6H5Z"/></symbol>
+  <symbol id="ic-calendar" viewBox="0 0 24 24"><path d="M7 2a1 1 0 0 1 1 1v1h8V3a1 1 0 1 1 2 0v1h1a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1V3a1 1 0 0 1 1-1Zm0 6v2h2V8H7Zm4 0v2h2V8h-2Zm4 0v2h2V8h-2ZM5 12v6h14v-6H5Z"/></symbol>
+  <symbol id="ic-journal" viewBox="0 0 24 24"><path d="M6 3h9.5A3.5 3.5 0 0 1 19 6.5V20a1 1 0 0 1-1.447.894L15 19.118 12.447 20.894A1 1 0 0 1 11 20V6a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v13H4a1 1 0 1 1 0-2h1V6.5A3.5 3.5 0 0 1 8.5 3ZM15 7h-2v2h2V7Zm0 4h-2v2h2v-2Z"/></symbol>
+  <symbol id="ic-settings" viewBox="0 0 24 24"><path d="M12 8.5A3.5 3.5 0 1 1 8.5 12 3.5 3.5 0 0 1 12 8.5Zm0-6a1 1 0 0 1 .894.553l.857 1.714a7.982 7.982 0 0 1 1.9.788l1.9-.636a1 1 0 0 1 1.182.46l1 1.732a1 1 0 0 1-.288 1.288l-1.6 1.158a7.9 7.9 0 0 1 0 2.234l1.6 1.158a1 1 0 0 1 .288 1.288l-1 1.732a1 1 0 0 1-1.182.46l-1.9-.636a7.982 7.982 0 0 1-1.9.788l-.857 1.714a1 1 0 0 1-.894.553h-2a1 1 0 0 1-.894-.553l-.857-1.714a7.982 7.982 0 0 1-1.9-.788l-1.9.636a1 1 0 0 1-1.182-.46l-1-1.732a1 1 0 0 1 .288-1.288l1.6-1.158a7.9 7.9 0 0 1 0-2.234l-1.6-1.158a1 1 0 0 1-.288-1.288l1-1.732a1 1 0 0 1 1.182-.46l1.9.636a7.982 7.982 0 0 1 1.9-.788l.857-1.714A1 1 0 0 1 10 2.5h2Z"/></symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 1 6 6v4.382l1.447 1.447A1 1 0 0 1 19.586 16H4.414a1 1 0 0 1-.707-1.707L5 13.382V9a6 6 0 0 1 7-5.917V3Z"/><path d="M9 18a3 3 0 0 0 6 0H9Z"/></symbol>
+  <symbol id="ic-sound" viewBox="0 0 24 24"><path d="M5 9v6h3l5 4V5L8 9H5Zm11.5 3a3.5 3.5 0 0 0-2.247-3.236l-.753 1.846A1.5 1.5 0 0 1 15 12a1.5 1.5 0 0 1-1.5 1.39l.753 1.846A3.5 3.5 0 0 0 16.5 12Z"/><path d="M18.5 12a5.5 5.5 0 0 0-3.53-5.096l-.642 1.888A3.5 3.5 0 0 1 17 12a3.5 3.5 0 0 1-2.672 3.208l.642 1.888A5.5 5.5 0 0 0 18.5 12Z"/></symbol>
+  <symbol id="ic-mute" viewBox="0 0 24 24"><path d="M4 9h3.5L13 4.5V19.5L7.5 15H4V9Zm13.586 3 1.707-1.707-1.414-1.414L16.172 10.586 14.465 8.88l-1.414 1.414 1.707 1.707-1.707 1.707 1.414 1.414 1.707-1.707 1.707 1.707 1.414-1.414L17.586 12Z"/></symbol>
+  <symbol id="ic-mic" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3Zm-1 17.93V22h2v-2.07A7.002 7.002 0 0 0 19 13h-2a5 5 0 1 1-10 0H5a7.002 7.002 0 0 0 6 6.93Z"/></symbol>
+  <symbol id="ic-send" viewBox="0 0 24 24"><path d="M3.172 20.829 21 12 3.172 3.172 3 10l10 2-10 2z"/></symbol>
+  <symbol id="ic-logout" viewBox="0 0 24 24"><path d="M13 4a1 1 0 0 0-1-1H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6a1 1 0 0 0 1-1v-3h-2v2H6V6h5v2h2V4Zm7.707 8.707-3 3-1.414-1.414L17.586 13H11v-2h6.586l-1.293-1.293 1.414-1.414 3 3a1 1 0 0 1 0 1.414Z"/></symbol>
+  <symbol id="ic-happy" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm-3 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm6 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm-6.5 4.5a5 5 0 0 0 7 0l-1.414-1.414a3 3 0 0 1-4.172 0L8.5 14.5Z"/></symbol>
+  <symbol id="ic-neutral" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm-3 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm6 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm-5 5h4v2H10v-2Z"/></symbol>
+  <symbol id="ic-sad" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm-3 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm6 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm-5.5 6a3.5 3.5 0 0 1 5 0L17 15.5a5.5 5.5 0 0 0-10 0L9.5 16Z"/></symbol>
+  <symbol id="ic-fire" viewBox="0 0 24 24"><path d="M13 2s.5 2.5-.5 4.5S9 10 9 12.5a3 3 0 0 0 6 0c0-1.5 0-2.5 1-3.5 0 3.5 3 4 3 7a7 7 0 1 1-14 0C5 11 9 8 9 5c0-1.5-2 1-2 1 0-3 3-4 3-4s.5 1.5 3 0Z"/></symbol>
+  <symbol id="ic-sleep" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 1-6.32 12.8L8 15h8l-2 5a8 8 0 0 1-2-.27A8 8 0 0 1 12 4Z"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><path d="M20.292 5.293 9 16.586l-5.293-5.293-1.414 1.414L9 19.414l12.707-12.707-1.415-1.414Z"/></symbol>
+  <symbol id="ic-play" viewBox="0 0 24 24"><path d="M6 4.5v15l13-7.5-13-7.5Z"/></symbol>
+</svg>
+
+<!-- SETUP -->
+<div id="setup-screen">
+  <h1>Your Personal Assistant</h1>
+  <p>Set up your AI companion — it remembers everything, plans your days, speaks to you, and is always there.</p>
+  <div class="setup-card">
+    <div><label>Your Name</label><input type="text" id="user-name" placeholder="e.g. Alex" style="margin-top:8px"></div>
+    <div><label>Name Your Assistant</label><input type="text" id="assistant-name" placeholder="e.g. Aria, Max, Nova…" style="margin-top:8px"></div>
+    <div><label>Anthropic API Key <small style="color:var(--accent);font-size:11px">(free at console.anthropic.com)</small></label><input type="password" id="api-key-setup" placeholder="sk-ant-…" style="margin-top:8px"></div>
+    <div><label>Tell your assistant about you</label><textarea id="user-bio" rows="3" placeholder="I'm a teacher, I love hiking, I have two cats…" style="margin-top:8px;resize:vertical"></textarea></div>
+    <button class="btn-primary" onclick="setupAssistant()">Meet My Assistant →</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="assistant-identity">
+      <div class="avatar-wrap">
+        <div class="avatar-ring" id="avatar-ring"></div>
+        <div class="avatar" id="avatar">
+          <span class="avatar-letter" id="avatar-letter">A</span>
+          <div class="waveform" id="waveform">
+            <div class="wave-bar"></div><div class="wave-bar"></div>
+            <div class="wave-bar"></div><div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+          </div>
+          <div class="think-ripple" id="ripple1"></div>
+          <div class="think-ripple" id="ripple2"></div>
+        </div>
+      </div>
+      <div class="assistant-name-wrap">
+        <div class="name" id="header-name">Assistant</div>
+        <div class="status"><div class="status-dot"></div><span id="status-text">Ready</span></div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" id="mute-btn" onclick="toggleMute()" title="Mute"><svg class="icon"><use href="#ic-mute"></use></svg></button>
+      <button class="btn-icon" onclick="requestNotificationPermission()" title="Reminders"><svg class="icon"><use href="#ic-bell"></use></svg></button>
+      <button class="btn-icon" onclick="switchTab('settings')" title="Settings"><svg class="icon"><use href="#ic-settings"></use></svg></button>
+      <button class="btn-icon" onclick="logoutApp()" title="Log out"><svg class="icon"><use href="#ic-logout"></use></svg></button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('chat')" id="tab-chat"><svg class="icon"><use href="#ic-chat"></use></svg><span>Chat</span></div>
+    <div class="tab" onclick="switchTab('planner')" id="tab-planner"><svg class="icon"><use href="#ic-calendar"></use></svg><span>Planner</span></div>
+    <div class="tab" onclick="switchTab('journal')" id="tab-journal"><svg class="icon"><use href="#ic-journal"></use></svg><span>Journal</span></div>
+    <div class="tab" onclick="switchTab('settings')" id="tab-settings"><svg class="icon"><use href="#ic-settings"></use></svg><span>Settings</span></div>
+  </div>
+
+  <div class="content">
+
+    <!-- CHAT -->
+    <div class="tab-panel active" id="panel-chat" style="padding:0;display:flex;flex-direction:column;">
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="listen-bar" id="listen-bar"></div>
+      <div class="chat-input-area">
+        <button class="btn-mic" id="mic-btn" onclick="toggleVoice()"><svg class="icon"><use href="#ic-mic"></use></svg></button>
+        <textarea class="chat-input" id="chat-input" placeholder="Talk to your assistant…" rows="1"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"
+          oninput="autoResize(this)"></textarea>
+        <button class="btn-send" onclick="sendMessage()"><svg class="icon"><use href="#ic-send"></use></svg></button>
+      </div>
+    </div>
+
+    <!-- PLANNER -->
+    <div class="tab-panel" id="panel-planner">
+      <div><div class="section-title">Day Planner</div><div class="section-sub">Plan your day, track your tasks</div></div>
+      <div class="date-nav">
+        <button onclick="changeDay(-1)">‹</button>
+        <div class="date-display" id="date-display"></div>
+        <button onclick="changeDay(1)">›</button>
+        <button class="btn-secondary" onclick="planWithAI()">Plan with AI</button>
+      </div>
+      <div class="mood-bar">
+        <div class="mood-label">Today's mood:</div>
+        <div class="mood-options">
+          <button class="mood-btn" data-mood="happy" onclick="setMood(this,'happy')" title="Happy">😊</button>
+          <button class="mood-btn" data-mood="neutral" onclick="setMood(this,'neutral')" title="Okay">😐</button>
+          <button class="mood-btn" data-mood="sad" onclick="setMood(this,'sad')" title="Down">😔</button>
+          <button class="mood-btn" data-mood="fire" onclick="setMood(this,'fire')" title="On fire">🔥</button>
+          <button class="mood-btn" data-mood="sleep" onclick="setMood(this,'sleep')" title="Tired">😴</button>
+        </div>
+      </div>
+      <div class="add-task-row">
+        <input type="text" id="new-task" placeholder="Add a task…" onkeydown="if(event.key==='Enter')addTask()">
+        <input type="time" id="task-time" style="width:110px">
+        <select id="task-cat">
+          <option value="work">Work</option>
+          <option value="personal">Personal</option>
+          <option value="health">Health</option>
+          <option value="other">Other</option>
+        </select>
+        <button class="btn-primary" onclick="addTask()" style="padding:10px 16px;font-size:13px">Add</button>
+      </div>
+      <div class="tasks-list" id="tasks-list"></div>
+    </div>
+
+    <!-- JOURNAL -->
+    <div class="tab-panel" id="panel-journal">
+      <div><div class="section-title">Daily Journal</div><div class="section-sub">Reflect on your day</div></div>
+      <div class="journal-entry-box">
+        <textarea id="journal-text" placeholder="How did your day go? What did you accomplish? How are you feeling?…" rows="7"></textarea>
+        <div class="journal-actions">
+          <button class="btn-secondary" onclick="analyzeJournalWithAI()">Reflect with AI</button>
+          <button class="btn-primary" onclick="saveJournalEntry()" style="padding:10px 18px;font-size:13px">Save Entry</button>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Past Entries</div>
+      <div class="past-entries" id="past-entries"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="tab-panel" id="panel-settings">
+      <div><div class="section-title">Settings</div><div class="section-sub">Personalize your assistant</div></div>
+
+      <div class="settings-grid">
+
+        <div class="settings-card" id="card-identity">
+          <div class="card-head">
+            <div class="card-title">Identity</div>
+            <div class="card-actions"></div>
+          </div>
+          <div class="card-body">
+            <div class="settings-row"><div><div class="settings-label">Your Name</div></div><input type="text" id="setting-username" onchange="saveSetting('userName',this.value);updateUI()"></div>
+            <div class="settings-row"><div><div class="settings-label">Assistant Name</div></div><input type="text" id="setting-assistantname" onchange="saveSetting('assistantName',this.value);updateUI()"></div>
+            <div class="settings-row"><div><div class="settings-label">About You</div></div><input type="text" id="setting-bio" style="min-width:230px" onchange="saveSetting('userBio',this.value)"></div>
+          </div>
+        </div>
+
+        <div class="settings-card" id="card-appearance">
+          <div class="card-head">
+            <div class="card-title">Appearance</div>
+            <div class="card-actions"><button class="pill-btn" onclick="selectTheme(state.theme||'midnight')">Reapply</button></div>
+          </div>
+          <div class="card-body" style="padding:6px 10px 14px 10px;">
+            <div style="font-size:12px;color:var(--muted);margin:6px 6px 10px;">Pick a vibe for the whole assistant.</div>
+            <div class="theme-grid" id="theme-grid"></div>
+          </div>
+        </div>
+
+        <div class="settings-card is-collapsed" id="card-api">
+          <div class="card-head">
+          <div class="card-title">API Keys</div>
+          <div class="card-actions">
+            <button class="pill-btn" onclick="toggleSettingsSection('card-api')">Toggle</button>
+            <button class="pill-btn" onclick="revealApiInputs()">Show inputs</button>
+          </div>
+        </div>
+        <div class="card-body" id="api-body" style="display:none">
+            <div class="settings-row">
+              <div><div class="settings-label">Provider</div><div class="settings-desc">Choose where requests run</div></div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button class="pill-btn" id="provider-big" onclick="setProvider('bigmodel')">BigModel</button>
+                <button class="pill-btn" id="provider-gem" onclick="setProvider('gemini')">Gemini</button>
+                <button class="pill-btn" id="provider-groq" onclick="setProvider('groq')">Groq</button>
+                <button class="pill-btn" id="provider-cer" onclick="setProvider('cerebras')">Cerebras</button>
+                <button class="pill-btn" id="provider-or" onclick="setProvider('openrouter')">OpenRouter</button>
+                <button class="pill-btn" id="provider-gh" onclick="setProvider('github')">GitHub Models</button>
+                <button class="pill-btn" id="provider-pai" onclick="setProvider('publicai')">Public AI</button>
+                <button class="pill-btn" id="provider-wis" onclick="setProvider('wisdom')">Wisdom Gate</button>
+                <button class="pill-btn" id="provider-mis" onclick="setProvider('mistral')">Mistral</button>
+                <button class="pill-btn" id="provider-anth" onclick="setProvider('anthropic')">Anthropic</button>
+              </div>
+            </div>
+            <div id="anthropic-fields">
+            <div class="settings-row">
+              <div><div class="settings-label">Anthropic API Key</div><div class="settings-desc">Get yours free at console.anthropic.com</div></div>
+              <input type="password" id="setting-apikey" onchange="saveSetting('apiKey',this.value)">
+            </div>
+            </div>
+            <div id="groq-fields">
+              <div class="settings-row">
+                <div><div class="settings-label">Groq API Key</div><div class="settings-desc">Bearer key for api.groq.com</div></div>
+                <input type="password" id="setting-groq-key" onchange="saveSetting('groqKey',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">Groq Model</div><div class="settings-desc">e.g. llama-3.1-70b-versatile</div></div>
+                <input type="text" id="setting-groq-model" value="llama-3.1-70b-versatile" onchange="saveSetting('groqModel',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">Groq Base</div><div class="settings-desc">Default: https://api.groq.com/openai/v1</div></div>
+                <input type="text" id="setting-groq-base" value="https://api.groq.com/openai/v1" onchange="saveSetting('groqBase',this.value)">
+              </div>
+            </div>
+            <div id="gemini-fields">
+              <div class="settings-row">
+                <div><div class="settings-label">Gemini API Key</div><div class="settings-desc">Used for Gemini models</div></div>
+                <input type="password" id="setting-gemini-key" onchange="saveSetting('geminiKey',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">Gemini Model</div><div class="settings-desc">e.g. gemini-1.5-flash</div></div>
+                <input type="text" id="setting-gemini-model" value="gemini-1.5-flash" onchange="saveSetting('geminiModel',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">Gemini Base</div><div class="settings-desc">Default: https://generativelanguage.googleapis.com/v1beta/openai</div></div>
+                <input type="text" id="setting-gemini-base" value="https://generativelanguage.googleapis.com/v1beta/openai" onchange="saveSetting('geminiBase',this.value)">
+              </div>
+            </div>
+            <div id="github-fields">
+              <div class="settings-row">
+                <div><div class="settings-label">GitHub Models PAT</div><div class="settings-desc">PAT with read:models scope</div></div>
+                <input type="password" id="setting-github-key" onchange="saveSetting('githubKey',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">GitHub Model</div><div class="settings-desc">e.g. meta/meta-llama-3.1-8b-instruct</div></div>
+                <input type="text" id="setting-github-model" value="meta/meta-llama-3.1-8b-instruct" onchange="saveSetting('githubModel',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">GitHub Base</div><div class="settings-desc">Default: https://models.github.ai/inference</div></div>
+                <input type="text" id="setting-github-base" value="https://models.github.ai/inference" onchange="saveSetting('githubBase',this.value)">
+              </div>
+            </div>
+            <div id="cerebras-fields">
+              <div class="settings-row">
+                <div><div class="settings-label">Cerebras Key</div><div class="settings-desc">Bearer key from cerebras.ai</div></div>
+                <input type="password" id="setting-cerebras-key" onchange="saveSetting('cerebrasKey',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">Cerebras Model</div><div class="settings-desc">e.g. llama-3.3-70b</div></div>
+                <input type="text" id="setting-cerebras-model" value="llama-3.3-70b" onchange="saveSetting('cerebrasModel',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">Cerebras Base</div><div class="settings-desc">Default: https://api.cerebras.ai/v1</div></div>
+                <input type="text" id="setting-cerebras-base" value="https://api.cerebras.ai/v1" onchange="saveSetting('cerebrasBase',this.value)">
+              </div>
+            </div>
+            <div id="openrouter-fields">
+              <div class="settings-row">
+                <div><div class="settings-label">OpenRouter Key</div><div class="settings-desc">Bearer key from openrouter.ai</div></div>
+                <input type="password" id="setting-openrouter-key" onchange="saveSetting('openRouterKey',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">OpenRouter Model</div><div class="settings-desc">e.g. meta-llama-3.1-8b-instruct</div></div>
+                <input type="text" id="setting-openrouter-model" value="meta-llama-3.1-8b-instruct" onchange="saveSetting('openRouterModel',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">OpenRouter Base</div><div class="settings-desc">Default: https://openrouter.ai/api/v1</div></div>
+                <input type="text" id="setting-openrouter-base" value="https://openrouter.ai/api/v1" onchange="saveSetting('openRouterBase',this.value)">
+              </div>
+            </div>
+            <div id="wisdom-fields">
+              <div class="settings-row">
+                <div><div class="settings-label">Wisdom Gate Key</div><div class="settings-desc">Bearer key (OpenAI-style)</div></div>
+                <input type="password" id="setting-wisdom-key" onchange="saveSetting('wisdomKey',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">Wisdom Gate Model</div><div class="settings-desc">e.g. gpt-4o-mini or gpt-4.1-mini</div></div>
+                <input type="text" id="setting-wisdom-model" value="gpt-4o-mini" onchange="saveSetting('wisdomModel',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">Wisdom Gate Base</div><div class="settings-desc">Default: https://wisdom-gate.juheapi.com/v1</div></div>
+                <input type="text" id="setting-wisdom-base" value="https://wisdom-gate.juheapi.com/v1" onchange="saveSetting('wisdomBase',this.value)">
+              </div>
+            </div>
+            <div id="publicai-fields">
+              <div class="settings-row">
+                <div><div class="settings-label">Public AI Key</div><div class="settings-desc">Public AI token</div></div>
+                <input type="password" id="setting-publicai-key" onchange="saveSetting('publicAIKey',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">Public AI Model</div><div class="settings-desc">e.g. meta-llama-3.1-8b-instruct</div></div>
+                <input type="text" id="setting-publicai-model" value="meta-llama-3.1-8b-instruct" onchange="saveSetting('publicAIModel',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">Public AI Base</div><div class="settings-desc">Default: https://api.publicai.cloud/v1</div></div>
+                <input type="text" id="setting-publicai-base" value="https://api.publicai.cloud/v1" onchange="saveSetting('publicAIBase',this.value)">
+              </div>
+            </div>
+            <div id="mistral-fields">
+              <div class="settings-row">
+                <div><div class="settings-label">Mistral API Key</div><div class="settings-desc">Bearer key</div></div>
+                <input type="password" id="setting-mistral-key" onchange="saveSetting('mistralKey',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">Mistral Model</div><div class="settings-desc">e.g. mistral-large-latest</div></div>
+                <input type="text" id="setting-mistral-model" value="mistral-large-latest" onchange="saveSetting('mistralModel',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">Mistral Base</div><div class="settings-desc">Default: https://api.mistral.ai/v1</div></div>
+                <input type="text" id="setting-mistral-base" value="https://api.mistral.ai/v1" onchange="saveSetting('mistralBase',this.value)">
+              </div>
+            </div>
+            <div id="bigmodel-fields">
+              <div class="settings-row">
+                <div><div class="settings-label">BigModel API Key</div><div class="settings-desc">kept locally in your browser</div></div>
+                <input type="password" id="setting-bigmodel-key" onchange="saveSetting('bigModelKey',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">BigModel Model</div><div class="settings-desc">e.g. glm-4.7</div></div>
+                <input type="text" id="setting-bigmodel-model" value="glm-4.7" onchange="saveSetting('bigModelModel',this.value)">
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-label">BigModel Base</div><div class="settings-desc">Default: https://api.z.ai/api/paas/v4</div></div>
+                <input type="text" id="setting-bigmodel-base" value="https://api.z.ai/api/paas/v4" onchange="saveSetting('bigModelBase',this.value)">
+              </div>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-label">ElevenLabs API Key <span style="color:var(--success);font-size:11px">Siri-quality voice</span></div><div class="settings-desc">Free tier at elevenlabs.io · 10k chars/month</div></div>
+              <input type="password" id="setting-elevenkey" placeholder="Optional" onchange="saveSetting('elevenLabsKey',this.value);loadElevenLabsVoices()">
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card" id="card-voice">
+          <div class="card-head">
+            <div class="card-title">Voice & Animation</div>
+          </div>
+          <div class="card-body">
+            <div class="settings-row"><div><div class="settings-label">Speak Responses</div><div class="settings-desc">Assistant reads replies aloud</div></div><div class="toggle" id="toggle-voice" onclick="toggleSetting('voiceEnabled',this)"></div></div>
+            <div class="settings-row"><div><div class="settings-label">Typewriter Effect</div><div class="settings-desc">Text types out character by character</div></div><div class="toggle" id="toggle-typewriter" onclick="toggleSetting('typewriterEnabled',this)"></div></div>
+            <div class="settings-row"><div><div class="settings-label">Reminders</div><div class="settings-desc">Browser notifications for tasks</div></div><div class="toggle" id="toggle-reminder" onclick="toggleSetting('remindersEnabled',this)"></div></div>
+          </div>
+        </div>
+
+        <div class="settings-card" id="card-voices">
+          <div class="card-head">
+            <div class="card-title">🎙 Choose Voice</div>
+            <div class="card-actions"><button class="pill-btn" onclick="toggleSettingsSection('card-voices')">Toggle</button></div>
+          </div>
+          <div class="card-body">
+            <!-- ENGINE TABS -->
+            <div style="display:flex;gap:8px;margin:10px 12px 14px;">
+              <button id="engine-tab-eleven" onclick="switchVoiceEngine('elevenlabs')"
+                style="flex:1;padding:9px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:13px;cursor:pointer;transition:all .2s;"
+                class="engine-tab active-engine">🌟 ElevenLabs <span style="font-size:10px;color:var(--success)">(Siri-quality)</span></button>
+              <button id="engine-tab-browser" onclick="switchVoiceEngine('browser')"
+                style="flex:1;padding:9px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:13px;cursor:pointer;transition:all .2s;"
+                class="engine-tab">Browser Voice</button>
+            </div>
+
+            <!-- ELEVENLABS PANEL -->
+            <div id="eleven-panel" style="padding:0 12px 12px;">
+              <div id="eleven-key-prompt" style="background:rgba(192,132,252,0.08);border:1px solid rgba(192,132,252,0.25);border-radius:12px;padding:14px;margin-bottom:12px;font-size:13px;color:var(--muted);line-height:1.6;">
+                🔑 Add your <strong style="color:var(--text)">ElevenLabs API key</strong> above to unlock ultra-natural voices.<br>
+                Free at <a href="https://elevenlabs.io" target="_blank" style="color:var(--accent2)">elevenlabs.io</a> — 10,000 characters/month free.
+              </div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Press play to preview any voice.</div>
+              <div class="voice-list" id="eleven-voice-list">
+                <div style="color:var(--muted);font-size:13px;padding:8px">Add your ElevenLabs key to see voices.</div>
+              </div>
+            </div>
+
+            <!-- BROWSER PANEL -->
+            <div id="browser-panel" style="display:none;padding:0 12px 12px;">
+              <div class="voice-controls-row">
+                <div class="slider-group">
+                  <label>Speed</label>
+                  <input type="range" class="voice-slider" id="voice-rate" min="0.5" max="1.8" step="0.05" value="1"
+                    oninput="state.voiceRate=+this.value;document.getElementById('rate-val').textContent=this.value;saveState()">
+                  <span class="slider-val" id="rate-val">1</span>
+                </div>
+                <div class="slider-group">
+                  <label>Pitch</label>
+                  <input type="range" class="voice-slider" id="voice-pitch" min="0.5" max="2" step="0.05" value="1"
+                    oninput="state.voicePitch=+this.value;document.getElementById('pitch-val').textContent=this.value;saveState()">
+                  <span class="slider-val" id="pitch-val">1</span>
+                </div>
+              </div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Natural voices sound most human-like. Press play to preview.</div>
+              <div class="voice-list" id="voice-list">
+                <div style="color:var(--muted);font-size:13px;padding:8px">Loading voices…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card is-collapsed" id="card-data">
+          <div class="card-head">
+            <div class="card-title">Data</div>
+            <div class="card-actions"><button class="pill-btn" onclick="toggleSettingsSection('card-data')">Toggle</button></div>
+          </div>
+          <div class="card-body" style="display:none">
+            <div class="settings-row"><div><div class="settings-label">Clear All Data</div><div class="settings-desc">Wipes memory, tasks, journal</div></div><button class="btn-secondary" style="color:var(--danger);border-color:var(--danger)" onclick="clearAllData()">Clear</button></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════
+//  STATE
+// ═══════════════════════════
+let state = {
+  userName:'', assistantName:'', apiKey:'', userBio:'',
+  voiceEnabled:true, typewriterEnabled:true, remindersEnabled:false,
+  selectedVoiceURI:'', voiceRate:1.0, voicePitch:1.0,
+  elevenLabsKey:'99edeacbb8f94734200573ff438f271f', elevenVoiceId:'21m00Tcm4TlvDq8ikWAM', voiceEngine:'elevenlabs',
+  provider:'bigmodel',
+  bigModelKey:'0210af5bab1740e8a61732191ec368ca.z0telieFVSj5BbN6', bigModelModel:'glm-4.7', bigModelBase:'https://api.z.ai/api/paas/v4',
+  geminiKey:'AIzaSyC9-SKbxtrN33RTVYZDLFfCsdlToO1rTa4', geminiModel:'gemini-1.5-flash-latest', geminiBase:'https://generativelanguage.googleapis.com/v1beta',
+  groqKey:'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', groqModel:'llama-3.1-70b-versatile', groqBase:'https://api.groq.com/openai/v1',
+  cerebrasKey:'csk-5thpf2kyw6tj3vpfyhvm63ntftfn3mt89e3w8cmw262ffc3c', cerebrasModel:'llama-3.3-70b', cerebrasBase:'https://api.cerebras.ai/v1',
+  wisdomKey:'sk-erNSdC5SnhjMWXyqfWyimwut9oVc43f4gUj8NTlwWdzf7th3', wisdomModel:'gpt-4o-mini', wisdomBase:'https://wisdom-gate.juheapi.com/v1',
+  githubModel:'meta/meta-llama-3.1-8b-instruct', githubKey:'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', githubBase:'https://models.github.ai/inference',
+  publicAIKey:'zpka_5ea59206570341d7adc16c7e9557ccc8_5a1b82bc', publicAIModel:'meta-llama-3.1-8b-instruct', publicAIBase:'https://api.publicai.cloud/v1',
+  mistralKey:'Y9MTZSYZ7Q7UUkYxJiEr5xMokGUeVS90', mistralModel:'mistral-large-latest', mistralBase:'https://api.mistral.ai/v1',
+  openRouterKey:'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', openRouterModel:'meta-llama-3.1-8b-instruct', openRouterBase:'https://openrouter.ai/api/v1',
+  theme:'midnight',
+  chatHistory:[], tasks:{}, journal:[], mood:{}, memories:[]
+};
+const themes = {
+  midnight:{name:'Midnight Glow',mood:'Focus',desc:'Charcoal + gold pop',scheme:'dark',preview:['#0f0e17','#1a1826','#e8c547','#c084fc'],values:{
+    bg:'#0f0e17',surface:'#1a1826',surface2:'#221f35',accent:'#e8c547',accent2:'#c084fc',text:'#fffffe',muted:'#a7a9be',danger:'#ff6b6b',success:'#6bffb8',border:'rgba(255,255,255,0.07)',glow:'rgba(232,197,71,0.2)'
+  }},
+  ocean:{name:'Aqua Bloom',mood:'Calm',desc:'Navy + aquamarine',scheme:'dark',preview:['#0b172a','#132b4c','#5fd1ff','#6fe2c5'],values:{
+    bg:'#0b172a',surface:'#0f223a',surface2:'#132b4c',accent:'#5fd1ff',accent2:'#6fe2c5',text:'#e8f4ff',muted:'#9bb6d1',danger:'#ff8ba7',success:'#7ef5c4',border:'rgba(255,255,255,0.08)',glow:'rgba(95,209,255,0.18)'
+  }},
+  forest:{name:'Forest Tea',mood:'Grounded',desc:'Evergreen + matcha',scheme:'dark',preview:['#0f1a14','#1d3124','#9bd37d','#52c39b'],values:{
+    bg:'#0f1a14',surface:'#15241b',surface2:'#1d3124',accent:'#9bd37d',accent2:'#52c39b',text:'#e8f4e9',muted:'#9aba9f',danger:'#f1716f',success:'#86efac',border:'rgba(255,255,255,0.07)',glow:'rgba(82,195,155,0.18)'
+  }},
+  sunrise:{name:'Sunrise Peach',mood:'Bright',desc:'Peach + coral',scheme:'light',preview:['#fff7f0','#ffe3d5','#ff7e5f','#feb47b'],values:{
+    bg:'#fff7f0',surface:'#fff1e3',surface2:'#ffe3d5',accent:'#ff7e5f',accent2:'#feb47b',text:'#2c1a13',muted:'#7a4f3a',danger:'#d7263d',success:'#1ec28b',border:'rgba(0,0,0,0.06)',glow:'rgba(255,126,95,0.22)'
+  }},
+  paper:{name:'Calm Paper',mood:'Clean',desc:'Soft gray + cobalt',scheme:'light',preview:['#f6f7fb','#e7eaf2','#3b82f6','#8b5cf6'],values:{
+    bg:'#f6f7fb',surface:'#ffffff',surface2:'#e7eaf2',accent:'#3b82f6',accent2:'#8b5cf6',text:'#0f172a',muted:'#6b7280',danger:'#ef4444',success:'#10b981',border:'rgba(15,23,42,0.08)',glow:'rgba(59,130,246,0.18)'
+  }},
+};
+const themeOrder = ['midnight','ocean','forest','sunrise','paper'];
+let currentDate = new Date();
+let isListening = false;
+let isMuted = false;
+let recognition = null;
+let synth = window.speechSynthesis;
+let allVoices = [];
+
+// ═══════════════════════════
+//  INIT
+// ═══════════════════════════
+function init() {
+  const saved = localStorage.getItem('pa_state');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      // Merge saved state, but never overwrite hardcoded keys with empty strings
+      const defaults = {
+        elevenLabsKey: '99edeacbb8f94734200573ff438f271f',
+        theme: 'midnight',
+        provider: 'bigmodel',
+        bigModelKey:'0210af5bab1740e8a61732191ec368ca.z0telieFVSj5BbN6',
+        bigModelModel:'glm-4.7',
+        bigModelBase:'https://api.z.ai/api/paas/v4',
+        geminiKey:'AIzaSyC9-SKbxtrN33RTVYZDLFfCsdlToO1rTa4',
+        geminiModel:'gemini-1.5-flash-latest',
+        geminiBase:'https://generativelanguage.googleapis.com/v1beta',
+        groqKey:'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',
+        groqModel:'llama-3.1-70b-versatile',
+        groqBase:'https://api.groq.com/openai/v1',
+        cerebrasKey:'csk-5thpf2kyw6tj3vpfyhvm63ntftfn3mt89e3w8cmw262ffc3c',
+        cerebrasModel:'llama-3.3-70b',
+        cerebrasBase:'https://api.cerebras.ai/v1',
+        wisdomKey:'sk-erNSdC5SnhjMWXyqfWyimwut9oVc43f4gUj8NTlwWdzf7th3',
+        wisdomModel:'gpt-4o-mini',
+        wisdomBase:'https://wisdom-gate.juheapi.com/v1',
+        githubModel:'meta/meta-llama-3.1-8b-instruct',
+        githubKey:'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',
+        githubBase:'https://models.github.ai/inference',
+        publicAIKey:'zpka_5ea59206570341d7adc16c7e9557ccc8_5a1b82bc',
+        publicAIModel:'meta-llama-3.1-8b-instruct',
+        publicAIBase:'https://api.publicai.cloud/v1',
+        mistralKey:'Y9MTZSYZ7Q7UUkYxJiEr5xMokGUeVS90',
+        mistralModel:'mistral-large-latest',
+        mistralBase:'https://api.mistral.ai/v1',
+        openRouterKey:'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',
+        openRouterModel:'meta-llama-3.1-8b-instruct',
+        openRouterBase:'https://openrouter.ai/api/v1'
+      };
+      state = {...state, ...parsed};
+      // Restore defaults if saved value is blank
+      for (const [k, v] of Object.entries(defaults)) {
+        if (!state[k]) state[k] = v;
+      }
+    } catch(e) {}
+  }
+  if (state.provider === 'ollama') { state.provider = 'bigmodel'; saveState(); }
+
+  applyTheme(state.theme || 'midnight', true);
+  if (state.userName && state.assistantName && state.apiKey) showApp();
+
+  // Speech recognition
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SR) {
+    recognition = new SR();
+    recognition.continuous = false; recognition.interimResults = true; recognition.lang = 'en-US';
+    recognition.onresult = e => {
+      const t = Array.from(e.results).map(r => r[0].transcript).join('');
+      document.getElementById('chat-input').value = t;
+      if (e.results[e.results.length-1].isFinal) { stopListening(); sendMessage(); }
+    };
+    recognition.onend = stopListening;
+    recognition.onerror = stopListening;
+  }
+
+  // Load voices
+  loadVoices();
+  if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
+  setTimeout(loadVoices, 800); // fallback for Firefox
+
+  updateDateDisplay();
+  checkDailyReminder();
+}
+
+function saveState() { localStorage.setItem('pa_state', JSON.stringify(state)); }
+function saveSetting(k, v) { state[k] = v; saveState(); }
+function toggleSetting(k, el) { state[k] = !state[k]; el.classList.toggle('on', state[k]); saveState(); }
+function applyTheme(key, skipSave=false) {
+  const theme = themes[key] || themes.midnight;
+  const root = document.documentElement;
+  Object.entries(theme.values).forEach(([k,v]) => root.style.setProperty(`--${k}`, v));
+  root.style.colorScheme = theme.scheme || 'dark';
+  state.theme = key;
+  if (!skipSave) saveState();
+  markActiveTheme(key);
+}
+function markActiveTheme(key) {
+  document.querySelectorAll('.theme-card').forEach(card=>{
+    card.classList.toggle('active', card.dataset.theme === key);
+  });
+}
+function renderThemeGrid() {
+  const grid = document.getElementById('theme-grid'); if (!grid) return;
+  grid.innerHTML = themeOrder.map(key=>{
+    const t = themes[key];
+    const sw = t.preview.map(c=>`<span class="swatch" style="background:${c}"></span>`).join('');
+    return `<button class="theme-card ${state.theme===key?'active':''}" data-theme="${key}" onclick="selectTheme('${key}')">
+      <div class="theme-top">
+        <div>
+          <div class="theme-name">${t.name}</div>
+          <div class="theme-desc">${t.desc}</div>
+        </div>
+        <span class="theme-badge">${t.mood}</span>
+      </div>
+      <div class="theme-swatches">${sw}</div>
+    </button>`;
+  }).join('');
+}
+function selectTheme(key) {
+  if (!themes[key]) key = 'midnight';
+  applyTheme(key);
+  renderThemeGrid();
+  showToast(`${themes[key]?.name || 'Theme'} applied`);
+}
+function setProvider(p) {
+  state.provider = p; saveState(); updateProviderUI();
+}
+function updateProviderUI() {
+  const useAnth = state.provider === 'anthropic';
+  const useBig  = state.provider === 'bigmodel';
+  const useGroq = state.provider === 'groq';
+  const useCer  = state.provider === 'cerebras';
+  const useGem  = state.provider === 'gemini';
+  const useGh   = state.provider === 'github';
+  const useOr   = state.provider === 'openrouter';
+  const usePai  = state.provider === 'publicai';
+  const useWis  = state.provider === 'wisdom';
+  const useMis  = state.provider === 'mistral';
+  document.getElementById('provider-anth')?.classList.toggle('active', useAnth);
+  document.getElementById('provider-big')?.classList.toggle('active', useBig);
+  document.getElementById('provider-groq')?.classList.toggle('active', useGroq);
+  document.getElementById('provider-cer')?.classList.toggle('active', useCer);
+  document.getElementById('provider-gem')?.classList.toggle('active', useGem);
+  document.getElementById('provider-gh')?.classList.toggle('active', useGh);
+  document.getElementById('provider-or')?.classList.toggle('active', useOr);
+  document.getElementById('provider-pai')?.classList.toggle('active', usePai);
+  document.getElementById('provider-wis')?.classList.toggle('active', useWis);
+  document.getElementById('provider-mis')?.classList.toggle('active', useMis);
+  const anth = document.getElementById('anthropic-fields');
+  const big  = document.getElementById('bigmodel-fields');
+  const groq = document.getElementById('groq-fields');
+  const cer  = document.getElementById('cerebras-fields');
+  const gem  = document.getElementById('gemini-fields');
+  const gh   = document.getElementById('github-fields');
+  const or   = document.getElementById('openrouter-fields');
+  const pai  = document.getElementById('publicai-fields');
+  const wis  = document.getElementById('wisdom-fields');
+  const mis  = document.getElementById('mistral-fields');
+  if (anth) anth.style.display = useAnth ? '' : 'none';
+  if (big)  big.style.display  = useBig  ? '' : 'none';
+  if (groq) groq.style.display = useGroq ? '' : 'none';
+  if (cer)  cer.style.display  = useCer ? '' : 'none';
+  if (gem)  gem.style.display  = useGem  ? '' : 'none';
+  if (gh)   gh.style.display   = useGh  ? '' : 'none';
+  if (or)   or.style.display   = useOr  ? '' : 'none';
+  if (pai)  pai.style.display  = usePai ? '' : 'none';
+  if (wis)  wis.style.display  = useWis ? '' : 'none';
+  if (mis)  mis.style.display  = useMis ? '' : 'none';
+}
+function toggleSettingsSection(cardId) {
+  const card = document.getElementById(cardId);
+  if (!card) return;
+  const body = card.querySelector('.card-body');
+  const collapsed = card.classList.toggle('is-collapsed');
+  if (body) body.style.display = collapsed ? 'none' : '';
+}
+function revealApiInputs() {
+  const body = document.getElementById('api-body');
+  if (body) {
+    body.style.display = '';
+    document.getElementById('card-api')?.classList.remove('is-collapsed');
+    updateProviderUI();
+  }
+}
+
+// ═══════════════════════════
+//  VOICE ENGINE SWITCHER
+// ═══════════════════════════
+function switchVoiceEngine(engine) {
+  state.voiceEngine = engine; saveState();
+  document.getElementById('eleven-panel').style.display = engine === 'elevenlabs' ? '' : 'none';
+  document.getElementById('browser-panel').style.display = engine === 'browser' ? '' : 'none';
+  document.querySelectorAll('.engine-tab').forEach(t => t.classList.remove('active-engine'));
+  document.getElementById('engine-tab-' + (engine === 'elevenlabs' ? 'eleven' : 'browser')).classList.add('active-engine');
+}
+
+// ═══════════════════════════
+//  ELEVENLABS VOICES
+// ═══════════════════════════
+const ELEVEN_BUILT_IN = [
+  { id:'21m00Tcm4TlvDq8ikWAM', name:'Rachel', desc:'Calm, professional female', accent:'American' },
+  { id:'AZnzlk1XvdvUeBnXmlld', name:'Domi',   desc:'Confident, strong female',  accent:'American' },
+  { id:'EXAVITQu4vr4xnSDxMaL', name:'Bella',  desc:'Soft, gentle female',        accent:'American' },
+  { id:'ErXwobaYiN019PkySvjV', name:'Antoni', desc:'Warm, friendly male',        accent:'American' },
+  { id:'MF3mGyEYCl7XYWbV9V6O', name:'Elli',   desc:'Young, energetic female',    accent:'American' },
+  { id:'TxGEqnHWrfWFTfGW9XjX', name:'Josh',   desc:'Deep, resonant male',        accent:'American' },
+  { id:'VR6AewLTigWG4xSOukaG', name:'Arnold', desc:'Crisp, authoritative male',  accent:'American' },
+  { id:'pNInz6obpgDQGcFmaJgB', name:'Adam',   desc:'Neutral, clear male',        accent:'American' },
+  { id:'yoZ06aMxZJJ28mfd3POQ', name:'Sam',    desc:'Raspy, energetic male',      accent:'American' },
+  { id:'onwK4e9ZLuTAKqWW03F9', name:'Daniel', desc:'Authoritative news voice',   accent:'British'  },
+  { id:'flq6f7yk4E4fJM5XTYuZ', name:'Michael',desc:'Orator, elegant male',       accent:'American' },
+  { id:'g5CIjZEefAph4nQFvHAz', name:'Ethan',  desc:'Soft, ASMR male',            accent:'American' },
+];
+
+let elevenVoicesLoaded = false;
+
+async function loadElevenLabsVoices() {
+  const key = state.elevenLabsKey;
+  const list = document.getElementById('eleven-voice-list');
+  if (!list) return;
+
+  // Hide prompt if key is present
+  const prompt = document.getElementById('eleven-key-prompt');
+  if (prompt) prompt.style.display = key ? 'none' : '';
+
+  if (!key) {
+    renderElevenVoices(ELEVEN_BUILT_IN);
+    return;
+  }
+
+  list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:8px">Loading voices from ElevenLabs…</div>';
+  try {
+    const res = await fetch('https://api.elevenlabs.io/v1/voices', {
+      headers: { 'xi-api-key': key }
+    });
+    if (!res.ok) throw new Error('API error ' + res.status);
+    const data = await res.json();
+    const voices = (data.voices || []).map(v => ({
+      id: v.voice_id,
+      name: v.name,
+      desc: v.labels?.description || v.labels?.accent || '',
+      accent: v.labels?.accent || ''
+    }));
+    elevenVoicesLoaded = true;
+    renderElevenVoices(voices.length ? voices : ELEVEN_BUILT_IN);
+  } catch(e) {
+    console.warn('Could not fetch ElevenLabs voices:', e);
+    renderElevenVoices(ELEVEN_BUILT_IN);
+  }
+}
+
+function renderElevenVoices(voices) {
+  const list = document.getElementById('eleven-voice-list');
+  if (!list) return;
+  list.innerHTML = voices.map((v, i) => {
+    const sel = v.id === state.elevenVoiceId;
+    return `<div class="voice-item ${sel?'selected':''}" id="evitem-${i}" onclick="selectElevenVoice('${v.id}',${i})">
+      <div class="vi-dot" style="${sel?'background:var(--accent)':''}"></div>
+      <div class="vi-info">
+        <div class="vi-name">${v.name}</div>
+        <div class="vi-sub">${v.desc}${v.accent?' · '+v.accent:''}</div>
+      </div>
+      <span class="vi-badge natural">Neural</span>
+      <button class="vi-play" onclick="event.stopPropagation();previewElevenVoice('${v.id}')" title="Preview"><svg class="icon"><use href="#ic-play"></use></svg></button>
+    </div>`;
+  }).join('');
+}
+
+function selectElevenVoice(id, i) {
+  state.elevenVoiceId = id; saveState();
+  document.querySelectorAll('#eleven-voice-list .voice-item').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById('evitem-'+i);
+  if (el) { el.classList.add('selected'); el.querySelector('.vi-dot').style.background='var(--accent)'; }
+}
+
+async function previewElevenVoice(id) {
+  const prevId = state.elevenVoiceId;
+  state.elevenVoiceId = id;
+  if (elevenAudio) { elevenAudio.pause(); elevenAudio = null; }
+  await speakElevenLabs(`Hi! I'm ${state.assistantName || 'your assistant'}. How does this voice sound?`);
+  state.elevenVoiceId = prevId; // restore after preview starts (audio already queued)
+}
+
+// ═══════════════════════════
+//  VOICE LOADER & PICKER
+// ═══════════════════════════
+const NATURAL_HINTS = [
+  'Samantha','Alex','Victoria','Karen','Moira','Fiona','Tessa','Nicky','Allison','Susan',
+  'Google UK English Female','Google UK English Male','Google US English',
+  'Microsoft Aria','Microsoft Jenny','Microsoft Guy','Microsoft Zira','Microsoft David',
+  'Ava','Tom','Daniel','Kate','Serena','Oliver','Arthur','Emma','Brian'
+];
+
+function voiceQuality(v) {
+  if (NATURAL_HINTS.some(h => v.name.includes(h))) return 'natural';
+  if (v.localService) return 'local';
+  return 'basic';
+}
+
+function loadVoices() {
+  const voices = synth.getVoices();
+  if (!voices.length) return;
+  allVoices = voices;
+
+  // Sort: natural > local > basic; within tier alphabetical
+  allVoices.sort((a,b) => {
+    const order = {natural:0, local:1, basic:2};
+    const diff = order[voiceQuality(a)] - order[voiceQuality(b)];
+    return diff !== 0 ? diff : a.name.localeCompare(b.name);
+  });
+
+  // Auto-pick best voice if none saved yet
+  if (!state.selectedVoiceURI) {
+    const best = allVoices.find(v => voiceQuality(v) === 'natural' && v.lang.startsWith('en'))
+                 || allVoices.find(v => v.lang.startsWith('en'))
+                 || allVoices[0];
+    if (best) { state.selectedVoiceURI = best.voiceURI; saveState(); }
+  }
+
+  renderVoiceList();
+  // Update sliders from saved state
+  const rEl = document.getElementById('voice-rate');
+  const pEl = document.getElementById('voice-pitch');
+  if (rEl) { rEl.value = state.voiceRate||1; document.getElementById('rate-val').textContent = state.voiceRate||1; }
+  if (pEl) { pEl.value = state.voicePitch||1; document.getElementById('pitch-val').textContent = state.voicePitch||1; }
+}
+
+function renderVoiceList() {
+  const list = document.getElementById('voice-list');
+  if (!list) return;
+
+  // Show English voices; if <10 total show all
+  const show = allVoices.filter(v => v.lang.startsWith('en') || allVoices.length < 10);
+  if (!show.length) { list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:8px">No voices found. Chrome & Edge have the best selection.</div>'; return; }
+
+  list.innerHTML = show.map((v, i) => {
+    const q = voiceQuality(v);
+    const sel = v.voiceURI === state.selectedVoiceURI;
+    const badge = q === 'natural' ? '<span class="vi-badge natural">Natural</span>'
+                : q === 'local'   ? '<span class="vi-badge local">Local</span>' : '';
+    const uri = v.voiceURI.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return `<div class="voice-item ${sel?'selected':''}" id="vitem-${i}" onclick="selectVoice('${uri}',${i})">
+      <div class="vi-dot"></div>
+      <div class="vi-info">
+        <div class="vi-name">${v.name}</div>
+        <div class="vi-sub">${v.lang}${!v.localService?' · online':''}</div>
+      </div>
+      ${badge}
+      <button class="vi-play" onclick="event.stopPropagation();previewVoice('${uri}')" title="Preview"><svg class="icon"><use href="#ic-play"></use></svg></button>
+    </div>`;
+  }).join('');
+}
+
+function selectVoice(uri, i) {
+  state.selectedVoiceURI = uri; saveState();
+  document.querySelectorAll('.voice-item').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById('vitem-'+i);
+  if (el) { el.classList.add('selected'); el.querySelector('.vi-dot').style.background='var(--accent)'; }
+}
+
+function previewVoice(uri) {
+  const v = allVoices.find(x => x.voiceURI === uri);
+  if (!v) return;
+  synth.cancel();
+  const utt = new SpeechSynthesisUtterance(`Hi, I'm ${state.assistantName||'your assistant'}. How does this voice sound to you?`);
+  utt.voice = v; utt.rate = state.voiceRate||1; utt.pitch = state.voicePitch||1;
+  synth.speak(utt);
+}
+
+// ═══════════════════════════
+//  SETUP
+// ═══════════════════════════
+function setupAssistant() {
+  const name  = document.getElementById('user-name').value.trim();
+  const aName = document.getElementById('assistant-name').value.trim();
+  const key   = document.getElementById('api-key-setup').value.trim();
+  const bio   = document.getElementById('user-bio').value.trim();
+  if (!name||!aName||!key) { showToast('Please fill your name, assistant name & API key!'); return; }
+  Object.assign(state, {userName:name, assistantName:aName, apiKey:key, userBio:bio});
+  saveState(); showApp();
+  setTimeout(addSystemGreeting, 700);
+}
+
+function showApp() {
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('app').classList.add('visible');
+  updateUI(); renderTasks(); renderJournal(); loadSettingsUI();
+}
+
+function updateUI() {
+  const n = state.assistantName || 'Assistant';
+  document.getElementById('header-name').textContent = n;
+  document.getElementById('avatar-letter').textContent = n[0]?.toUpperCase() || 'A';
+  document.title = n;
+}
+
+function loadSettingsUI() {
+  document.getElementById('setting-username').value = state.userName;
+  document.getElementById('setting-assistantname').value = state.assistantName;
+  document.getElementById('setting-apikey').value = state.apiKey||'';
+  document.getElementById('setting-bio').value = state.userBio||'';
+  document.getElementById('setting-elevenkey').value = state.elevenLabsKey||'';
+  document.getElementById('setting-gemini-key').value = state.geminiKey||'';
+  document.getElementById('setting-gemini-model').value = state.geminiModel||'gemini-1.5-flash-latest';
+  document.getElementById('setting-gemini-base').value = state.geminiBase||'https://generativelanguage.googleapis.com/v1beta';
+  document.getElementById('setting-groq-key').value = state.groqKey||'';
+  document.getElementById('setting-groq-model').value = state.groqModel||'llama-3.1-70b-versatile';
+  document.getElementById('setting-groq-base').value = state.groqBase||'https://api.groq.com/openai/v1';
+  document.getElementById('setting-cerebras-key').value = state.cerebrasKey||'';
+  document.getElementById('setting-cerebras-model').value = state.cerebrasModel||'llama-3.3-70b';
+  document.getElementById('setting-cerebras-base').value = state.cerebrasBase||'https://api.cerebras.ai/v1';
+  document.getElementById('setting-wisdom-key').value = state.wisdomKey||'';
+  document.getElementById('setting-wisdom-model').value = state.wisdomModel||'gpt-4o-mini';
+  document.getElementById('setting-wisdom-base').value = state.wisdomBase||'https://wisdom-gate.juheapi.com/v1';
+  document.getElementById('setting-github-key').value = state.githubKey||'';
+  document.getElementById('setting-github-model').value = state.githubModel||'meta/meta-llama-3.1-8b-instruct';
+  document.getElementById('setting-github-base').value = state.githubBase||'https://models.github.ai/inference';
+  document.getElementById('setting-openrouter-key').value = state.openRouterKey||'';
+  document.getElementById('setting-openrouter-model').value = state.openRouterModel||'meta-llama-3.1-8b-instruct';
+  document.getElementById('setting-openrouter-base').value = state.openRouterBase||'https://openrouter.ai/api/v1';
+  document.getElementById('setting-publicai-key').value = state.publicAIKey||'';
+  document.getElementById('setting-publicai-model').value = state.publicAIModel||'meta-llama-3.1-8b-instruct';
+  document.getElementById('setting-publicai-base').value = state.publicAIBase||'https://api.publicai.cloud/v1';
+  document.getElementById('setting-mistral-key').value = state.mistralKey||'';
+  document.getElementById('setting-mistral-model').value = state.mistralModel||'mistral-large-latest';
+  document.getElementById('setting-mistral-base').value = state.mistralBase||'https://api.mistral.ai/v1';
+  document.getElementById('setting-bigmodel-key').value = state.bigModelKey||'';
+  document.getElementById('setting-bigmodel-model').value = state.bigModelModel||'glm-4.7';
+  document.getElementById('setting-bigmodel-base').value = state.bigModelBase||'https://api.z.ai/api/paas/v4';
+  document.getElementById('toggle-voice').classList.toggle('on', state.voiceEnabled);
+  document.getElementById('toggle-typewriter').classList.toggle('on', state.typewriterEnabled !== false);
+  document.getElementById('toggle-reminder').classList.toggle('on', !!state.remindersEnabled);
+  renderThemeGrid();
+  markActiveTheme(state.theme || 'midnight');
+  updateProviderUI();
+  // Init voice engine UI
+  switchVoiceEngine(state.voiceEngine || 'elevenlabs');
+  loadElevenLabsVoices();
+}
+
+// ═══════════════════════════
+//  CHAT
+// ═══════════════════════════
+async function addSystemGreeting() {
+  const h = new Date().getHours();
+  const tod = h<12?'morning':h<17?'afternoon':'evening';
+  const tc = getTasksForDate(getTodayKey()).length;
+  setAvatarState('thinking');
+  const msg = await callAI([{role:'user',content:`You are ${state.assistantName}, warm personal AI for ${state.userName}. About them: ${state.userBio||'unknown'}. Give a warm 2-3 sentence ${tod} greeting. They have ${tc} tasks today. Be personal and friendly.`}], true);
+  setAvatarState('idle');
+  addMessage('assistant', msg);
+}
+
+function addMessage(role, text, skipHistory=false) {
+  const container = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `message ${role}`;
+  const now = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const letter = role==='assistant' ? (state.assistantName?.[0]||'A') : (state.userName?.[0]||'U');
+  const bid = 'b'+Date.now()+Math.random().toString(36).slice(2);
+
+  div.innerHTML = `<div class="msg-avatar">${letter}</div>
+    <div><div class="msg-bubble" id="${bid}"></div><div class="msg-time">${now}</div></div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+
+  const bubble = document.getElementById(bid);
+
+  const saveMsg = () => {
+    if (!skipHistory) {
+      state.chatHistory.push({role, content:text, time:Date.now()});
+      if (state.chatHistory.length > 100) state.chatHistory = state.chatHistory.slice(-80);
+      saveState();
+    }
+  };
+
+  if (role === 'assistant' && state.typewriterEnabled !== false) {
+    typewriteText(bubble, text, container, saveMsg);
+    if (!isMuted && state.voiceEnabled) speak(text);
+  } else {
+    bubble.innerHTML = text.replace(/\n/g,'<br>');
+    saveMsg();
+    if (role === 'assistant' && !isMuted && state.voiceEnabled) speak(text);
+  }
+}
+
+// ─── TYPEWRITER ───
+function typewriteText(el, text, scrollEl, onDone) {
+  const chars = [...text]; // handles emoji & unicode
+  let i = 0;
+  el.innerHTML = '';
+  const cursor = document.createElement('span');
+  cursor.className = 'tw-cursor';
+  el.appendChild(cursor);
+
+  const avg = Math.max(14, Math.min(30, 2200 / chars.length));
+
+  const tick = () => {
+    if (i >= chars.length) { cursor.remove(); if (onDone) onDone(); return; }
+    const ch = chars[i++];
+    if (ch === '\n') cursor.insertAdjacentHTML('beforebegin','<br>');
+    else cursor.insertAdjacentText('beforebegin', ch);
+    if (scrollEl) scrollEl.scrollTop = scrollEl.scrollHeight;
+    const pause = ch.match(/[.!?]/) ? avg + 120 : ch === ',' ? avg + 60 : avg;
+    setTimeout(tick, pause);
+  };
+  tick();
+}
+
+function showThinking() {
+  const c = document.getElementById('chat-messages');
+  const d = document.createElement('div');
+  d.className = 'message assistant'; d.id = 'thinking-msg';
+  const letter = state.assistantName?.[0]||'A';
+  d.innerHTML = `<div class="msg-avatar">${letter}</div>
+    <div class="msg-bubble"><div class="thinking-bubble">
+      <div class="think-dot"></div><div class="think-dot"></div><div class="think-dot"></div>
+    </div></div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+function removeThinking() { const e=document.getElementById('thinking-msg'); if(e) e.remove(); }
+
+async function sendMessage() {
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim(); if (!text) return;
+  inp.value = ''; inp.style.height = 'auto';
+
+  // Build messages BEFORE addMessage saves to history (prevents duplicate)
+  const messages = buildMessages(text);
+
+  addMessage('user', text);
+  const lower = text.toLowerCase();
+  if (lower.includes('what do i have planned for tomorrow')) {
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+    const tasks = getTasksForDate(getDateKey(tomorrow));
+    const summary = tasks.length ? tasks.map(t=>`- ${t.time?t.time+' ':''}${t.name} (${t.category})`).join('<br>') : 'Nothing scheduled for tomorrow yet.';
+    addMessage('assistant', `Here's what you have for ${tomorrow.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}:<br>${summary}`, true);
+    return;
+  }
+  setStatus('Thinking…'); setAvatarState('thinking'); showThinking();
+
+  const reply = await callAI(messages, false, buildSystemPrompt());
+  removeThinking(); setStatus('Ready'); setAvatarState('idle');
+  addMessage('assistant', reply);
+  extractMemory(text);
+}
+
+function buildSystemPrompt() {
+  const tasks = getTasksForDate(getTodayKey()).map(t=>`[${t.done?'x':' '}] ${t.time?t.time+' - ':''}${t.name}(${t.category})`).join(', ')||'None';
+  const journal = state.journal.slice(-3).map(j=>`${j.date}: ${j.text.substring(0,180)}`).join('\n')||'None';
+  const memories = state.memories.slice(-20).join('\n')||'None';
+  return `You are ${state.assistantName}, a warm personal AI for ${state.userName}.
+ABOUT THEM: ${state.userBio||'Getting to know them'}
+TODAY'S TASKS: ${tasks}
+RECENT JOURNAL:\n${journal}
+MEMORIES:\n${memories}
+Be warm, personal, concise (2-4 sentences). Use their name naturally. Reference context when relevant. Help with anything.`;
+}
+
+function buildMessages(newText) {
+  // Get last 20 messages, normalize roles
+  const raw = state.chatHistory.slice(-20).map(m => ({
+    role: m.role === 'assistant' ? 'assistant' : 'user',
+    content: (m.content || '').trim()
+  })).filter(m => m.content.length > 0);
+
+  // Ensure strict alternation (Anthropic requirement: must start with user, no consecutive same role)
+  const alternated = [];
+  for (const msg of raw) {
+    if (alternated.length === 0) {
+      if (msg.role === 'user') alternated.push(msg);
+      // skip leading assistant messages
+    } else {
+      const last = alternated[alternated.length - 1];
+      if (msg.role !== last.role) {
+        alternated.push(msg);
+      } else {
+        // Merge consecutive same-role by appending content
+        last.content += '\n' + msg.content;
+      }
+    }
+  }
+
+  // Must end with user turn before we add the new message
+  // (if last is assistant, that's fine — we're adding user next)
+  alternated.push({ role: 'user', content: newText.trim() });
+  return alternated;
+}
+
+async function callAI(messages, isSetup=false, systemPrompt='') {
+  try {
+    const cleanMessages = Array.isArray(messages) ? messages.filter(m => m.content && m.content.trim()) : messages;
+
+    const providerOrder = buildProviderOrder();
+    let lastErr = '';
+
+    for (const p of providerOrder) {
+      const reply = await callProviderByName(p, cleanMessages, systemPrompt);
+      if (!isBadReply(reply)) {
+        if (p !== state.provider) { state.provider = p; saveState(); showToast(`Switched to ${providerLabel(p)} after error`); }
+        return reply;
+      }
+      lastErr = reply || 'Unknown error';
+    }
+    return lastErr || "All providers failed. Check your keys and internet.";
+  } catch(e) { console.error('callAI failed:', e); return "Couldn't connect. Check your API key and internet connection."; }
+}
+
+function providerLabel(p) {
+  return {
+    bigmodel:'BigModel',
+    gemini:'Gemini',
+    groq:'Groq',
+    cerebras:'Cerebras',
+    wisdom:'Wisdom Gate',
+    openrouter:'OpenRouter',
+    github:'GitHub Models',
+    publicai:'Public AI',
+    mistral:'Mistral',
+    anthropic:'Anthropic'
+  }[p] || p;
+}
+
+function providerHasCreds(p) {
+  switch(p) {
+    case 'gemini': return !!state.geminiKey;
+    case 'groq': return !!state.groqKey;
+    case 'cerebras': return !!state.cerebrasKey;
+    case 'wisdom': return !!state.wisdomKey;
+    case 'openrouter': return !!state.openRouterKey;
+    case 'github': return !!state.githubKey;
+    case 'publicai': return !!state.publicAIKey;
+    case 'mistral': return !!state.mistralKey;
+    case 'anthropic': return !!state.apiKey;
+    case 'bigmodel': return !!state.bigModelKey;
+    default: return true;
+  }
+}
+
+function buildProviderOrder() {
+  const all = ['wisdom','groq','openrouter','github','publicai','mistral','cerebras','gemini','anthropic','bigmodel'];
+  // Put current provider first, BigModel always last
+  const filtered = all.filter(p => p !== 'bigmodel');
+  const order = [state.provider, ...filtered.filter(p => p !== state.provider), 'bigmodel'];
+  const unique = [];
+  for (const p of order) if (!unique.includes(p)) unique.push(p);
+  return unique; // try all; individual calls will error and fall through until a response
+}
+
+function isBadReply(r) {
+  if (!r || typeof r !== 'string') return true;
+  const s = r.toLowerCase();
+  const signals = ['error:', 'missing content', 'couldn\'t reach', 'raw:', 'response missing', 'add your '];
+  return signals.some(sig => s.includes(sig));
+}
+
+async function callProviderByName(p, messages, systemPrompt) {
+  switch(p) {
+    case 'bigmodel': return await callBigModel(messages, systemPrompt);
+    case 'gemini': return await callGemini(messages, systemPrompt);
+    case 'groq': return await callGroq(messages, systemPrompt);
+    case 'cerebras': return await callCerebras(messages, systemPrompt);
+    case 'wisdom': return await callWisdomGate(messages, systemPrompt);
+    case 'openrouter': return await callOpenRouter(messages, systemPrompt);
+    case 'github': return await callGithubModels(messages, systemPrompt);
+    case 'publicai': return await callPublicAI(messages, systemPrompt);
+    case 'mistral': return await callMistral(messages, systemPrompt);
+    case 'anthropic': {
+      if (!state.apiKey) return "Add your Anthropic API key in Settings! Get one free at console.anthropic.com";
+      const body = { model:'claude-haiku-4-5-20251001', max_tokens:500, messages };
+      if (systemPrompt) body.system = systemPrompt;
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-api-key':state.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (data.content?.[0]?.text) return data.content[0].text;
+      if (data.error) return `Anthropic error: ${data.error.message}`;
+      return `Anthropic raw: ${JSON.stringify(data).slice(0,400)}`;
+    }
+    default: return "Provider not supported.";
+  }
+}
+
+// Generic content extractor to reduce "response missing content" across providers
+function extractChoiceText(choice) {
+  if (!choice) return '';
+  const msg = choice.message || choice.delta || choice;
+  const c = msg?.content ?? msg?.text ?? '';
+  if (typeof c === 'string' && c.trim()) return c.trim();
+  if (Array.isArray(c)) {
+    const joined = c.map(p => p?.text || p?.value || p?.content || (typeof p === 'string' ? p : '')).join('').trim();
+    if (joined) return joined;
+  }
+  if (msg?.text && typeof msg.text === 'string') return msg.text.trim();
+  if (msg?.content?.[0]?.text) return msg.content[0].text.trim();
+  return '';
+}
+function extractContentFromData(data) {
+  const ch = data?.choices?.[0];
+  let txt = extractChoiceText(ch);
+  if (!txt && ch?.delta) txt = extractChoiceText(ch.delta);
+  return txt;
+}
+
+async function callBigModel(cleanMessages, systemPrompt='') {
+  try {
+    const url = (state.bigModelBase || 'https://api.z.ai/api/paas/v4').replace(/\/$/, '') + '/chat/completions';
+    const models = Array.from(new Set([
+      state.bigModelModel || 'glm-4.7',
+      'glm-4.7',
+      'glm-4-flash'
+    ]));
+    let lastErr = '';
+    for (const model of models) {
+      const body = {
+        model,
+        messages: cleanMessages.map(m => ({ role: m.role, content: m.content })),
+        stream: false
+      };
+      if (systemPrompt) body.system = systemPrompt;
+      const res = await fetch(url, {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'Authorization': state.bigModelKey ? `Bearer ${state.bigModelKey}` : ''
+        },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      const content = extractContentFromData(data);
+      if (content) { state.bigModelModel = model; saveState(); return content; }
+      if (data?.error?.message) { lastErr = data.error.message; continue; }
+      lastErr = JSON.stringify(data).slice(0,400);
+    }
+    return lastErr ? `BigModel error: ${lastErr}` : "BigModel response missing content.";
+  } catch(e) {
+    console.error('BigModel call failed:', e);
+    return "Couldn't reach BigModel. Check your API key, model name, or base URL.";
+  }
+}
+async function callGroq(cleanMessages, systemPrompt='') {
+  try {
+    const url = (state.groqBase || 'https://api.groq.com/openai/v1').replace(/\/$/, '') + '/chat/completions';
+    const models = Array.from(new Set([
+      state.groqModel || 'llama-3.1-70b-versatile',
+      'llama-3.1-70b-versatile',
+      'llama-3.1-8b-instant'
+    ]));
+    let lastErr = '';
+    for (const model of models) {
+      const body = {
+        model,
+        messages: cleanMessages.map(m => ({ role: m.role, content: m.content })),
+        stream: false
+      };
+      if (systemPrompt) body.system = systemPrompt;
+      const res = await fetch(url, {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'Authorization': state.groqKey ? `Bearer ${state.groqKey}` : ''
+        },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      const content = extractContentFromData(data);
+      if (content) { state.groqModel = model; saveState(); return content; }
+      if (data?.error?.message) { lastErr = data.error.message; continue; }
+      lastErr = JSON.stringify(data).slice(0,400);
+    }
+    return lastErr ? `Groq error: ${lastErr}` : "Groq response missing content.";
+  } catch(e) {
+    console.error('Groq call failed:', e);
+    return "Couldn't reach Groq. Check your API key, model name, or base URL.";
+  }
+}
+async function callCerebras(cleanMessages, systemPrompt='') {
+  try {
+    if (!state.cerebrasKey) return "Add your Cerebras key in Settings.";
+    const base = (state.cerebrasBase || 'https://api.cerebras.ai/v1').replace(/\/$/, '');
+    const url = `${base}/chat/completions`;
+    const attempt = async (modelName) => {
+      const msgs = cleanMessages.map(m => ({role:m.role, content:m.content}));
+      if (systemPrompt) msgs.unshift({role:'system', content: systemPrompt});
+      const body = {
+        model: modelName,
+        messages: msgs,
+        stream:false,
+        max_completion_tokens: 1024,
+        temperature: 0.3,
+        top_p: 1
+      };
+      const res = await fetch(url, {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'Authorization': `Bearer ${state.cerebrasKey}`
+        },
+        body: JSON.stringify(body)
+      });
+      return res.json();
+    };
+
+    const candidates = Array.from(new Set([
+      state.cerebrasModel || 'llama-3.3-70b',
+      'llama-3.3-70b',
+      'llama3.1-8b'
+    ]));
+    let data = null, chosen = candidates[0];
+    for (const modelName of candidates) {
+      data = await attempt(modelName);
+      if (data?.code === 'queue_exceeded' || data?.type === 'too_many_requests_error' || data?.error?.code === 'queue_exceeded') {
+        showToast('Cerebras busy â€” falling back to BigModel');
+        return await callBigModel(cleanMessages, systemPrompt);
+      }
+      if (data?.code === 'model_not_found' || data?.error?.code === 'model_not_found') {
+        continue;
+      }
+      chosen = modelName;
+      break;
+    }
+    state.cerebrasModel = chosen; saveState();
+
+    const content = extractContentFromData(data);
+    if (content) return content;
+    if (data?.error?.message) return `Cerebras error: ${data.error.message}`;
+    return `Cerebras raw: ${JSON.stringify(data).slice(0,400)}`;
+  } catch(e) {
+    console.error('Cerebras call failed:', e);
+    return "Couldn't reach Cerebras. Check your API key, model name, or base URL.";
+  }
+}
+async function callOpenRouter(cleanMessages, systemPrompt='') {
+  try {
+    if (!state.openRouterKey) return "Add your OpenRouter key in Settings.";
+    const base = (state.openRouterBase || 'https://openrouter.ai/api/v1').replace(/\/$/, '');
+    const url = `${base}/chat/completions`;
+    const msgs = cleanMessages.map(m => ({role:m.role, content:m.content}));
+    if (systemPrompt) msgs.unshift({role:'system', content: systemPrompt});
+    const models = Array.from(new Set([
+      state.openRouterModel || 'meta-llama-3.1-8b-instruct',
+      'meta-llama-3.1-8b-instruct',
+      'mistralai/mistral-small',
+      'qwen/qwen-2.5-7b-instruct'
+    ]));
+    const headers = {
+      'Content-Type':'application/json',
+      'Authorization': `Bearer ${state.openRouterKey}`,
+      'HTTP-Referer': window.location?.origin || 'http://localhost',
+      'X-Title': 'Personal Assistant'
+    };
+    let lastErr = '';
+    for (const model of models) {
+      const body = { model, messages: msgs, stream:false };
+      const res = await fetch(url, {method:'POST', headers, body: JSON.stringify(body)});
+      const data = await res.json();
+      const content = extractContentFromData(data);
+      if (content) { state.openRouterModel = model; saveState(); return content; }
+      if (data?.error?.message) { lastErr = data.error.message; continue; }
+      lastErr = JSON.stringify(data).slice(0,400);
+    }
+    return lastErr ? `OpenRouter error: ${lastErr}` : "OpenRouter response missing content.";
+  } catch(e) {
+    console.error('OpenRouter call failed:', e);
+    return "Couldn't reach OpenRouter. Check your API key, model name, or base URL.";
+  }
+}
+async function callWisdomGate(cleanMessages, systemPrompt='') {
+  try {
+    if (!state.wisdomKey) return "Add your Wisdom Gate key in Settings.";
+    const base = (state.wisdomBase || 'https://wisdom-gate.juheapi.com/v1').replace(/\/$/, '');
+    const url = `${base}/chat/completions`;
+    const models = Array.from(new Set([
+      state.wisdomModel || 'gpt-4o-mini',
+      'gpt-4o-mini',
+      'gpt-4o',
+      'gpt-4.1-mini',
+      'gpt-4.1'
+    ]));
+    const msgsBase = cleanMessages.map(m => ({role:m.role, content:m.content}));
+    if (systemPrompt) msgsBase.unshift({role:'system', content: systemPrompt});
+    let lastErr = '';
+    for (const model of models) {
+      const body = { model, messages: msgsBase, stream:false };
+      const res = await fetch(url, {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'Authorization': `Bearer ${state.wisdomKey}`
+        },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      const content = extractContentFromData(data);
+      if (content) { state.wisdomModel = model; saveState(); return content; }
+      if (data?.error?.message) {
+        lastErr = data.error.message;
+        if (data.error.code === 'model_not_found') continue;
+      } else {
+        lastErr = JSON.stringify(data).slice(0,400);
+      }
+    }
+    return lastErr ? `Wisdom Gate error: ${lastErr}` : "Wisdom Gate response missing content.";
+  } catch(e) {
+    console.error('Wisdom Gate call failed:', e);
+    return "Couldn't reach Wisdom Gate. Check key, model, or base URL.";
+  }
+}
+async function callGemini(cleanMessages, systemPrompt='') {
+  try {
+    if (!state.geminiKey) return "Add your Gemini API key in Settings.";
+    const base = (state.geminiBase || 'https://generativelanguage.googleapis.com/v1beta').replace(/\/$/, '');
+    const contents = cleanMessages.map(m=>({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{text: m.content}]
+    }));
+    const bodyBase = { contents };
+    if (systemPrompt) bodyBase.system_instruction = { parts:[{text: systemPrompt}] };
+
+    const modelsToTry = Array.from(new Set([
+      state.geminiModel || 'gemini-1.5-flash-latest',
+      'gemini-1.5-flash-latest',
+      'gemini-1.5-flash',
+      'gemini-1.5-pro-latest',
+      'gemini-1.0-pro'
+    ]));
+
+    let lastError = null;
+    for (const model of modelsToTry) {
+      const url = `${base}/models/${model}:generateContent`;
+      try {
+        const res = await fetch(url, {
+          method:'POST',
+          mode:'cors',
+          cache:'no-store',
+          referrerPolicy:'no-referrer',
+          headers:{
+            'Content-Type':'application/json',
+            'Accept':'application/json',
+            'x-goog-api-key': state.geminiKey
+          },
+          body: JSON.stringify(bodyBase)
+        });
+        const data = await res.json();
+        const content = extractGeminiContent(data);
+        if (content) { state.geminiModel = model; saveState(); return content; }
+        if (data?.error?.message) {
+          lastError = data.error.message;
+          // Try next model on model errors
+          if ((data.error.code||'').toString().includes('NOT_FOUND') || data.error.message.toLowerCase().includes('not found')) continue;
+        }
+        lastError = JSON.stringify(data).slice(0,600);
+      } catch(fetchErr) {
+        lastError = fetchErr.message;
+      }
+    }
+    if (lastError && lastError.toLowerCase().includes('failed to fetch') && window.location.protocol === 'file:') {
+      showToast('Gemini blocked from file:// — serve via http://localhost');
+    }
+    return lastError ? `Gemini error: ${lastError}` : "Gemini: no content returned.";
+  } catch(e) {
+    console.error('Gemini call failed:', e);
+    if (!window.location.href.startsWith('http')) {
+      showToast('Open this file via http://localhost to call Gemini (browser blocks file:// fetch)');
+    }
+    return `Couldn't reach Gemini. ${e.message || 'Network error'}`;
+  }
+}
+function extractGeminiContent(raw) {
+  const cand = raw?.candidates?.[0];
+  if (cand?.content?.parts) {
+    const joined = cand.content.parts.map(p=>p?.text || p?.value || '').filter(Boolean).join('').trim();
+    if (joined) return joined;
+  }
+  if (cand?.content?.parts?.[0]?.text) return cand.content.parts[0].text;
+  if (raw?.text) return raw.text;
+  return '';
+}
+
+async function callGithubModels(cleanMessages, systemPrompt='') {
+  try {
+    if (!state.githubKey) return "Add your GitHub Models PAT in Settings (read:models scope).";
+    const base = (state.githubBase || 'https://models.github.ai/inference').replace(/\/$/, '');
+    const url = `${base}/chat/completions`;
+    const models = Array.from(new Set([
+      state.githubModel || 'meta/meta-llama-3.1-8b-instruct',
+      'meta/meta-llama-3.1-8b-instruct',
+      'gpt-4o-mini'
+    ]));
+    let lastErr = '';
+    for (const model of models) {
+      const body = {
+        model,
+        messages: cleanMessages.map(m => ({role:m.role, content:m.content})),
+        max_tokens: 800,
+        temperature: 0.7,
+        stream:false
+      };
+      if (systemPrompt) body.system = systemPrompt;
+      const res = await fetch(url, {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'Authorization': `Bearer ${state.githubKey}`,
+          'Accept': 'application/json',
+          'X-GitHub-Api-Version': '2023-07-01'
+        },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      const content = extractContentFromData(data);
+      if (content) { state.githubModel = model; saveState(); return content; }
+      if (data?.error?.message) { lastErr = data.error.message; continue; }
+      lastErr = JSON.stringify(data).slice(0,400);
+    }
+    return lastErr ? `GitHub Models error: ${lastErr}` : "GitHub Models response missing content.";
+  } catch(e) {
+    console.error('GitHub Models call failed:', e);
+    return "Couldn't reach GitHub Models. Check PAT (read:models), model name, or base URL.";
+  }
+}
+
+async function callPublicAI(cleanMessages, systemPrompt='') {
+  try {
+    if (!state.publicAIKey) return "Add your Public AI token in Settings.";
+    const base = (state.publicAIBase || 'https://api.publicai.cloud/v1').replace(/\/$/, '');
+    const url = `${base}/chat/completions`;
+    const models = Array.from(new Set([
+      state.publicAIModel || 'meta-llama-3.1-8b-instruct',
+      'meta-llama-3.1-8b-instruct',
+      'gpt-4o-mini'
+    ]));
+    const headers = {
+      'Content-Type':'application/json',
+      'Authorization': `Bearer ${state.publicAIKey||''}`,
+      'x-api-key': state.publicAIKey||'',
+      'Accept': 'application/json'
+    };
+    let lastErr = '';
+    for (const model of models) {
+      const body = {
+        model,
+        messages: cleanMessages.map(m => ({role:m.role, content:m.content})),
+        stream:false
+      };
+      if (systemPrompt) body.system = systemPrompt;
+      const res = await fetch(url, {method:'POST', headers, body: JSON.stringify(body)});
+      const data = await res.json();
+      const content = extractContentFromData(data);
+      if (content) { state.publicAIModel = model; saveState(); return content; }
+      if (data?.error?.message) { lastErr = data.error.message; continue; }
+      lastErr = JSON.stringify(data).slice(0,400);
+    }
+    return lastErr ? `Public AI error: ${lastErr}` : "Public AI response missing content.";
+  } catch(e) {
+    console.error('Public AI call failed:', e);
+    return "Couldn't reach Public AI. Check token, model, or base URL.";
+  }
+}
+
+async function callMistral(cleanMessages, systemPrompt='') {
+  try {
+    if (!state.mistralKey) return "Add your Mistral API key in Settings.";
+    const base = (state.mistralBase || 'https://api.mistral.ai/v1').replace(/\/$/, '');
+    const url = `${base}/chat/completions`;
+    const models = Array.from(new Set([
+      state.mistralModel || 'mistral-large-latest',
+      'mistral-small-latest',
+      'mistral-large-latest'
+    ]));
+    let lastErr = '';
+    for (const model of models) {
+      const body = {
+        model,
+        messages: cleanMessages.map(m => ({role:m.role, content:m.content})),
+        stream:false
+      };
+      if (systemPrompt) body.system = systemPrompt;
+      const res = await fetch(url, {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'Authorization': `Bearer ${state.mistralKey}`
+        },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (data) console.log('Mistral raw:', JSON.stringify(data));
+      const content = extractContentFromData(data);
+      if (content) { state.mistralModel = model; saveState(); return content; }
+      if (data?.error?.message) { lastErr = data.error.message; continue; }
+      lastErr = JSON.stringify(data).slice(0,400);
+    }
+    return lastErr ? `Mistral error: ${lastErr}` : "Mistral response missing content.";
+  } catch(e) {
+    console.error('Mistral call failed:', e);
+    return "Couldn't reach Mistral. Check key, model, or base URL.";
+  }
+}
+
+function extractMemory(msg) {
+  const triggers = ['my ','i\'m ','i am ','i like ','i love ','i hate ','i have ','i work ','i live '];
+  if (triggers.some(t=>msg.toLowerCase().includes(t))) {
+    const m = `${new Date().toLocaleDateString()}: ${msg.substring(0,150)}`;
+    if (!state.memories.includes(m)) { state.memories.push(m); if(state.memories.length>50)state.memories=state.memories.slice(-40); saveState(); }
+  }
+}
+
+// ═══════════════════════════
+//  SPEAKING
+// ═══════════════════════════
+async function speak(text) {
+  if (!state.voiceEnabled || isMuted) return;
+  const clean = text.replace(/<[^>]*>/g,'').replace(/[*_~`#]/g,'').substring(0, 800);
+  if (!clean.trim()) return;
+
+  if (state.voiceEngine === 'elevenlabs' && state.elevenLabsKey) {
+    await speakElevenLabs(clean);
+  } else {
+    speakBrowser(clean);
+  }
+}
+
+let elevenAudio = null;
+
+async function speakElevenLabs(text) {
+  try {
+    setAvatarState('speaking');
+    if (elevenAudio) { elevenAudio.pause(); elevenAudio = null; }
+
+    const voiceId = state.elevenVoiceId || '21m00Tcm4TlvDq8ikWAM';
+    const url = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`;
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'xi-api-key': state.elevenLabsKey,
+        'Content-Type': 'application/json',
+        'Accept': 'audio/mpeg'
+      },
+      body: JSON.stringify({
+        text,
+        model_id: 'eleven_turbo_v2_5',
+        voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.3, use_speaker_boost: true }
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(()=>({}));
+      console.error('ElevenLabs error detail:', JSON.stringify(err));
+      console.error('ElevenLabs key used:', state.elevenLabsKey ? state.elevenLabsKey.substring(0,10)+'...' : 'EMPTY');
+      showToast('ElevenLabs error — falling back to browser voice');
+      speakBrowser(text);
+      setAvatarState('idle');
+      return;
+    }
+
+    const blob = await res.blob();
+    const objUrl = URL.createObjectURL(blob);
+    elevenAudio = new Audio(objUrl);
+    elevenAudio.playbackRate = Math.min(state.voiceRate || 1, 2);
+    elevenAudio.onended = () => { setAvatarState('idle'); URL.revokeObjectURL(objUrl); };
+    elevenAudio.onerror = (e) => {
+      console.warn('Audio playback error:', e);
+      setAvatarState('idle');
+      URL.revokeObjectURL(objUrl);
+      speakBrowser(text);
+    };
+    await elevenAudio.play();
+
+  } catch(e) {
+    console.error('ElevenLabs TTS failed:', e);
+    setAvatarState('idle');
+    if (e.message && e.message.includes('fetch') && !window._elevenCorsWarned) {
+      window._elevenCorsWarned = true;
+      showToast('Open via a local server for ElevenLabs voice');
+      console.warn('💡 Run: npx serve . then open http://localhost:3000');
+    }
+    speakBrowser(text);
+  }
+}
+
+function speakBrowser(text) {
+  synth.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.rate = state.voiceRate || 1;
+  utt.pitch = state.voicePitch || 1;
+  if (state.selectedVoiceURI && allVoices.length) {
+    const v = allVoices.find(x=>x.voiceURI===state.selectedVoiceURI);
+    if (v) utt.voice = v;
+  }
+  setAvatarState('speaking');
+  utt.onend = () => setAvatarState('idle');
+  utt.onerror = () => setAvatarState('idle');
+  synth.speak(utt);
+}
+
+function toggleMute() {
+  isMuted = !isMuted;
+  const btn = document.getElementById('mute-btn');
+  if (btn) btn.innerHTML = `<svg class="icon"><use href="${isMuted ? '#ic-mute' : '#ic-sound'}"></use></svg>`;
+  if (isMuted) {
+    synth.cancel();
+    if (elevenAudio) { elevenAudio.pause(); elevenAudio = null; }
+    setAvatarState('idle');
+  }
+  showToast(isMuted ? 'Voice muted' : 'Voice on');
+}
+
+// ═══════════════════════════
+//  VOICE INPUT
+// ═══════════════════════════
+function toggleVoice() { isListening ? stopListening() : startListening(); }
+
+function startListening() {
+  if (!recognition) { showToast('Voice input needs Chrome or Edge'); return; }
+  try {
+    isListening = true; recognition.start();
+    document.getElementById('mic-btn').classList.add('listening');
+    document.getElementById('mic-btn').innerHTML = '<svg class="icon"><use href="#ic-mic"></use></svg>';
+    document.getElementById('listen-bar').classList.add('active');
+    setStatus('Listening…');
+  } catch(e) { isListening=false; }
+}
+
+function stopListening() {
+  isListening = false;
+  try { if(recognition) recognition.stop(); } catch(e){}
+  document.getElementById('mic-btn').classList.remove('listening');
+  document.getElementById('mic-btn').innerHTML = '<svg class="icon"><use href="#ic-mic"></use></svg>';
+  document.getElementById('listen-bar').classList.remove('active');
+  setStatus('Ready');
+}
+
+// ═══════════════════════════
+//  AVATAR STATES
+// ═══════════════════════════
+function setAvatarState(s) {
+  const av = document.getElementById('avatar');
+  const ring = document.getElementById('avatar-ring');
+  av.classList.remove('speaking','thinking');
+  if (s === 'speaking') {
+    av.classList.add('speaking');
+    ring.style.animationDuration = '1.5s';
+    ring.style.opacity = '1';
+  } else if (s === 'thinking') {
+    av.classList.add('thinking');
+    ring.style.animationDuration = '0.8s';
+    ring.style.opacity = '1';
+  } else {
+    ring.style.animationDuration = '5s';
+    ring.style.opacity = '0.35';
+  }
+}
+
+function setStatus(txt) { document.getElementById('status-text').textContent = txt; }
+
+// ═══════════════════════════
+//  PLANNER
+// ═══════════════════════════
+function getTodayKey() { return new Date().toISOString().split('T')[0]; }
+function getDateKey(d) { return d.toISOString().split('T')[0]; }
+function getTasksForDate(k) { return state.tasks[k]||[]; }
+
+function updateDateDisplay() {
+  const key = getDateKey(currentDate), today = getTodayKey();
+  document.getElementById('date-display').textContent =
+    (key===today?'Today — ':'')+currentDate.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+}
+function changeDay(d) { currentDate.setDate(currentDate.getDate()+d); updateDateDisplay(); renderTasks(); }
+
+async function planWithAI() {
+  const dayKey = getDateKey(currentDate);
+  const dayLabel = currentDate.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+  const tasks = getTasksForDate(dayKey);
+  const taskList = tasks.length ? tasks.map(t=>`- ${t.time?t.time+' ':''}${t.name} (${t.category})`).join('\n') : 'No tasks yet';
+  switchTab('chat');
+  setStatus('Thinking…'); setAvatarState('thinking'); showThinking();
+  const reply = await callAI([{role:'user',content:`Help ${state.userName||'me'} plan ${dayLabel}. Current tasks:\n${taskList}\nReturn 4-6 short, time-stamped steps.`}], false, buildSystemPrompt());
+  removeThinking(); setStatus('Ready'); setAvatarState('idle');
+  addMessage('assistant', reply);
+}
+
+function addTask() {
+  const name = document.getElementById('new-task').value.trim(); if(!name) return;
+  const key = getDateKey(currentDate);
+  if(!state.tasks[key]) state.tasks[key]=[];
+  state.tasks[key].push({id:Date.now(),name,time:document.getElementById('task-time').value,category:document.getElementById('task-cat').value,done:false});
+  document.getElementById('new-task').value=''; document.getElementById('task-time').value='';
+  saveState(); renderTasks(); showToast('Task added');
+}
+
+function toggleTask(id) {
+  const key = getDateKey(currentDate), task = state.tasks[key]?.find(t=>t.id===id);
+  if (!task) return;
+  task.done = !task.done; saveState(); renderTasks();
+  if (task.done) {
+    setTimeout(()=>{
+      switchTab('chat');
+      callAI([{role:'user',content:`${state.userName} just completed "${task.name}"! Give brief warm congrats and ask how it went (1-2 sentences).`}],true)
+        .then(r=>addMessage('assistant',r));
+    }, 400);
+  }
+}
+
+function deleteTask(id) {
+  const key = getDateKey(currentDate);
+  state.tasks[key] = state.tasks[key]?.filter(t=>t.id!==id)||[];
+  saveState(); renderTasks();
+}
+
+function setMood(btn, moodVal) {
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected'); state.mood[getDateKey(currentDate)]=moodVal; saveState();
+}
+
+function renderTasks() {
+  const key=getDateKey(currentDate), tasks=getTasksForDate(key);
+  const mood=state.mood[key];
+  if(mood) document.querySelectorAll('.mood-btn').forEach(b=>b.classList.toggle('selected',b.dataset.mood===mood));
+  const c=document.getElementById('tasks-list');
+  if(!tasks.length){c.innerHTML=`<div style="text-align:center;padding:40px;color:var(--muted);font-size:14px">No tasks yet. Add some above.</div>`;return;}
+  c.innerHTML=tasks.map(t=>`<div class="task-item ${t.done?'done':''}" id="task-${t.id}">
+    <div class="task-check" onclick="toggleTask(${t.id})">${t.done?'<svg class="icon"><use href="#ic-check"></use></svg>':''}</div>
+    <div class="task-info"><div class="task-name">${t.name}</div>${t.time?`<div class="task-time">Time: ${t.time}</div>`:''}</div>
+    <span class="task-category cat-${t.category}">${t.category}</span>
+    <button class="task-delete" onclick="deleteTask(${t.id})">x</button>
+  </div>`).join('');
+}
+
+// ═══════════════════════════
+//  JOURNAL
+// ═══════════════════════════
+function saveJournalEntry() {
+  const text=document.getElementById('journal-text').value.trim(); if(!text) return;
+  const entry={id:Date.now(),date:new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'}),text,timestamp:Date.now()};
+  state.journal.unshift(entry);
+  if(state.journal.length>100) state.journal=state.journal.slice(0,80);
+  state.memories.push(`Journal ${entry.date}: ${text.substring(0,200)}`);
+  saveState(); document.getElementById('journal-text').value=''; renderJournal(); showToast('Entry saved');
+}
+
+async function analyzeJournalWithAI() {
+  const text=document.getElementById('journal-text').value.trim();
+  if(!text){showToast('Write something first!');return;}
+  switchTab('chat');
+  addMessage('user',`Here's my journal entry:\n"${text}"\n\nPlease reflect with me.`);
+  setStatus('Thinking…'); setAvatarState('thinking'); showThinking();
+  const r = await callAI([{role:'user',content:`${state.userName} shared this journal: "${text}". As ${state.assistantName}, give a warm 3-5 sentence reflection. Acknowledge feelings, highlight positives, ask one meaningful follow-up question.`}],false,buildSystemPrompt());
+  removeThinking(); setStatus('Ready'); setAvatarState('idle');
+  addMessage('assistant',r);
+  // Place reflection back into the journal box so the user can keep/edit it.
+  document.getElementById('journal-text').value = `${text}\n\nAI reflection:\n${r}`;
+}
+
+function renderJournal() {
+  const c=document.getElementById('past-entries');
+  if(!state.journal.length){c.innerHTML=`<div style="text-align:center;padding:28px;color:var(--muted);font-size:14px">Your journal entries will appear here.</div>`;return;}
+  c.innerHTML=state.journal.slice(0,10).map(e=>`<div class="past-entry" onclick="loadJournalEntry(${e.id})">
+    <div class="entry-date">${e.date}</div>
+    <div class="entry-preview">${e.text.substring(0,120)}${e.text.length>120?'...':''}</div>
+  </div>`).join('');
+}
+function loadJournalEntry(id) {
+  const e=state.journal.find(x=>x.id===id);
+  if(e) document.getElementById('journal-text').value=e.text;
+}
+
+// ═══════════════════════════
+//  REMINDERS
+// ═══════════════════════════
+function requestNotificationPermission() {
+  if(!('Notification' in window)){showToast('Notifications not supported');return;}
+  Notification.requestPermission().then(p=>{
+    if(p==='granted'){showToast('Reminders on');state.remindersEnabled=true;saveState();scheduleReminders();}
+  });
+}
+function scheduleReminders() {
+  if(!state.remindersEnabled) return;
+  getTasksForDate(getTodayKey()).forEach(t=>{
+    if(t.time&&!t.done){
+      const [h,m]=t.time.split(':').map(Number),now=new Date(),at=new Date();
+      at.setHours(h,m,0,0);
+      const diff=at-now;
+      if(diff>0&&diff<86400000) setTimeout(()=>new Notification(`${state.assistantName}`,{body:`Time for: ${t.name}`}),diff);
+    }
+  });
+}
+function checkDailyReminder() {
+  const last=localStorage.getItem('pa_last_daily'),today=getTodayKey();
+  if(last!==today&&state.assistantName){
+    localStorage.setItem('pa_last_daily',today);
+    if(state.remindersEnabled&&Notification.permission==='granted')
+      setTimeout(()=>new Notification(`Good morning — ${state.assistantName}`,{body:`Ready to plan your day, ${state.userName}?`}),3000);
+  }
+}
+
+// ═══════════════════════════
+//  TABS & UTILS
+// ═══════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
+function showToast(msg) {
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+function clearAllData() {
+  if(confirm('Clear ALL data? This cannot be undone.')) { localStorage.clear(); location.reload(); }
+}
+function logoutApp() {
+  localStorage.clear();
+  location.reload();
+}
+
+window.addEventListener('load', init);
+
+// Show banner if opened as file:// (ElevenLabs needs HTTP)
+if (location.protocol === 'file:') {
+  document.addEventListener('DOMContentLoaded', () => {
+    const banner = document.createElement('div');
+    banner.id = 'cors-banner';
+    banner.innerHTML = `
+      <span><strong>For ElevenLabs voice</strong>, open via a local server — not as a file.</span>
+      <span style="opacity:.7;font-size:12px">In terminal: <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px">npx serve .</code> then open <strong>http://localhost:3000</strong></span>
+      <button onclick="document.getElementById('cors-banner').remove()" style="background:none;border:none;color:inherit;cursor:pointer;font-size:18px;padding:0 4px">x</button>
+    `;
+    Object.assign(banner.style, {
+      position:'fixed', bottom:'70px', left:'50%', transform:'translateX(-50%)',
+      background:'rgba(255,107,107,0.15)', border:'1px solid rgba(255,107,107,0.4)',
+      borderRadius:'12px', padding:'12px 18px', zIndex:'9999',
+      display:'flex', gap:'14px', alignItems:'center', flexWrap:'wrap',
+      color:'#fff', fontSize:'13px', maxWidth:'90vw', backdropFilter:'blur(8px)'
+    });
+    document.body.appendChild(banner);
+  });
+}
+</script>
+</body>
+</html>
