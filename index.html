@@ -991,6 +991,7 @@ async function addSystemGreeting() {
   const msg = await callAI([{role:'user',content:`You are ${state.assistantName}, warm personal AI for ${state.userName}. About them: ${state.userBio||'unknown'}. Give a warm 2-3 sentence ${tod} greeting. They have ${tc} tasks today. Be personal and friendly.`}], true);
   setAvatarState('idle');
   addMessage('assistant', msg);
+  updateChatEmpty();
 }
 
 function addMessage(role, text, skipHistory=false) {
@@ -1005,6 +1006,7 @@ function addMessage(role, text, skipHistory=false) {
     <div><div class="msg-bubble" id="${bid}"></div><div class="msg-time">${now}</div></div>`;
   container.appendChild(div);
   container.scrollTop = container.scrollHeight;
+  updateChatEmpty();
 
   const bubble = document.getElementById(bid);
 
@@ -1024,6 +1026,7 @@ function addMessage(role, text, skipHistory=false) {
     saveMsg();
     if (role === 'assistant' && !isMuted && state.voiceEnabled) speak(text);
   }
+  updateChatEmpty();
 }
 
 // ─── TYPEWRITER ───
@@ -1047,6 +1050,12 @@ function typewriteText(el, text, scrollEl, onDone) {
     setTimeout(tick, pause);
   };
   tick();
+}
+
+function updateChatEmpty() {
+  const hasMessages = state.chatHistory && state.chatHistory.length > 0;
+  const panel = document.getElementById('panel-chat');
+  panel?.classList.toggle('chat-empty', !hasMessages);
 }
 
 function showThinking() {
@@ -1996,6 +2005,7 @@ function logoutApp() {
 }
 
 window.addEventListener('load', init);
+window.addEventListener('load', updateChatEmpty);
 window.addEventListener('resize', ()=>{ if(window.innerWidth>760){ document.body.classList.remove('menu-open'); document.getElementById('mobile-drawer')?.classList.remove('open'); }});
 
 // Show banner if opened as file:// (ElevenLabs needs HTTP)
