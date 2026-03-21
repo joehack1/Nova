@@ -136,7 +136,7 @@
         <button onclick="changeDay(-1)">‹</button>
         <div class="date-display" id="date-display"></div>
         <button onclick="changeDay(1)">›</button>
-        <button class="btn-secondary" onclick="planWithAI()">Plan with AI</button>
+        <button class="btn-secondary" onclick="planWithAI()">Plan & Save with AI</button>
       </div>
       <div class="mood-bar">
         <div class="mood-label">Today's mood:</div>
@@ -182,6 +182,7 @@
       <div class="journal-entry-box">
         <textarea id="journal-text" placeholder="How did your day go? What did you accomplish? How are you feeling?…" rows="7"></textarea>
         <div class="journal-actions">
+          <button class="btn-secondary" onclick="writeJournalWithAI()">Write & Save with AI</button>
           <button class="btn-secondary" onclick="analyzeJournalWithAI()">Reflect with AI</button>
           <button class="btn-primary" onclick="saveJournalEntry()" style="padding:10px 18px;font-size:13px">Save Entry</button>
         </div>
@@ -1998,11 +1999,116 @@ async function planWithAI() {
   const dayLabel = currentDate.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
   const tasks = getTasksForDate(dayKey);
   const taskList = tasks.length ? tasks.map(t=>`- ${t.time?t.time+' ':''}${t.name} (${t.category})`).join('\n') : 'No tasks yet';
-  switchTab('chat');
   setStatus('Thinking…'); setAvatarState('thinking'); showThinking();
-  const reply = await callAI([{role:'user',content:`Help ${state.userName||'me'} plan ${dayLabel}. Current tasks:\n${taskList}\nReturn 4-6 short, time-stamped steps.`}], false, buildSystemPrompt());
+  const reply = await callAI([{role:'user',content:`Create a practical plan for ${state.userName||'me'} on ${dayLabel}.
+Current tasks:
+${taskList}
+
+Return exactly 4-6 lines and no extra text.
+Use this format per line: HH:MM | task | category
+Allowed categories: work, personal, health, other.
+If time is unknown use --:--.`}], false, buildSystemPrompt());
   removeThinking(); setStatus('Ready'); setAvatarState('idle');
-  addMessage('assistant', reply);
+  const parsedTasks = parsePlanTasks(reply);
+  if (!parsedTasks.length) {
+    addMessage('assistant', reply);
+    showToast('AI plan created in chat, but no savable tasks were found');
+    switchTab('chat');
+    return;
+  }
+  if(!state.tasks[dayKey]) state.tasks[dayKey]=[];
+  let added = 0;
+  parsedTasks.forEach((t, idx) => {
+    const exists = state.tasks[dayKey].some(x =>
+      x.name.toLowerCase() === t.name.toLowerCase() &&
+      (x.time || '') === (t.time || '')
+    );
+    if (exists) return;
+    const task = { id: Date.now()+idx, name: t.name, time: t.time, category: t.category, done: false };
+    state.tasks[dayKey].push(task);
+    enqueueSync('task','add',{date:dayKey, task});
+    added++;
+  });
+  if (!added) {
+    showToast('No new tasks added (AI items were duplicates)');
+    switchTab('planner');
+    renderTasks();
+    return;
+  }
+  saveState();
+  renderTasks();
+  switchTab('planner');
+  addMessage('assistant', `I created a plan for ${dayLabel} and saved ${added} task${added>1?'s':''} to your planner.`);
+  showToast(`Saved ${added} AI task${added>1?'s':''} to planner`);
+}
+
+function parsePlanTasks(aiText) {
+  const lines = (aiText || '').split('\n').map(x => x.trim()).filter(Boolean);
+  const parsed = [];
+  for (const rawLine of lines) {
+    const line = rawLine.replace(/^[-*•\d\)\.\s]+/, '').trim();
+    if (!line) continue;
+
+    let time = '';
+    let name = '';
+    let category = 'other';
+
+    if (line.includes('|')) {
+      const parts = line.split('|').map(p => p.trim()).filter(Boolean);
+      if (parts.length >= 2) {
+        time = normalizeTaskTime(parts[0]);
+        name = parts[1];
+        category = normalizeTaskCategory(parts[2] || inferTaskCategory(parts[1]));
+      }
+    } else {
+      const m = line.match(/^(\d{1,2}:\d{2}(?:\s?[AaPp][Mm])?|--:--)\s*[-–—]\s*(.+)$/);
+      if (m) {
+        time = normalizeTaskTime(m[1]);
+        name = m[2].trim();
+        category = normalizeTaskCategory(inferTaskCategory(name));
+      } else {
+        name = line;
+        category = normalizeTaskCategory(inferTaskCategory(name));
+      }
+    }
+
+    name = (name || '').replace(/\s+/g, ' ').trim();
+    if (!name) continue;
+    parsed.push({ name, time, category });
+    if (parsed.length >= 8) break;
+  }
+  return parsed;
+}
+
+function normalizeTaskTime(value) {
+  const raw = (value || '').trim();
+  if (!raw || raw === '--:--') return '';
+  const normalized = raw.toUpperCase().replace(/\./g, '').replace(/\s+/g, ' ');
+  const fullMatch = normalized.match(/^(\d{1,2}):(\d{2})(?:\s?(AM|PM))?$/);
+  if (!fullMatch) return raw;
+  let hour = parseInt(fullMatch[1], 10);
+  const mins = fullMatch[2];
+  const meridiem = fullMatch[3];
+  if (meridiem === 'PM' && hour < 12) hour += 12;
+  if (meridiem === 'AM' && hour === 12) hour = 0;
+  if (hour < 0 || hour > 23) return raw;
+  return `${String(hour).padStart(2,'0')}:${mins}`;
+}
+
+function normalizeTaskCategory(value) {
+  const v = (value || '').toLowerCase();
+  if (v.includes('work') || v.includes('job') || v.includes('study') || v.includes('school')) return 'work';
+  if (v.includes('health') || v.includes('exercise') || v.includes('fitness') || v.includes('gym') || v.includes('wellness')) return 'health';
+  if (v.includes('personal') || v.includes('family') || v.includes('home') || v.includes('life')) return 'personal';
+  return 'other';
+}
+
+function inferTaskCategory(text) {
+  const t = (text || '').toLowerCase();
+  if (/(meeting|email|client|project|report|code|deadline|class|assignment|study)/.test(t)) return 'work';
+  if (/(workout|run|walk|gym|stretch|meditate|sleep|water|doctor|meal)/.test(t)) return 'health';
+  if (/(family|friend|home|clean|shopping|call mom|personal|errand)/.test(t)) return 'personal';
+  return 'other';
 }
 
 function addTask() {
@@ -2133,11 +2239,59 @@ function renderHeatmap() {
 // ═══════════════════════════
 function saveJournalEntry() {
   const text=document.getElementById('journal-text').value.trim(); if(!text) return;
-  const entry={id:Date.now(),date:new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'}),text,timestamp:Date.now()};
+  const saved = saveJournalEntryText(text, true);
+  if (saved) showToast('Entry saved');
+}
+
+function saveJournalEntryText(text, clearEditor=false) {
+  const cleanText = (text || '').trim();
+  if(!cleanText) return null;
+  const entry={
+    id:Date.now(),
+    date:new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'}),
+    text:cleanText,
+    timestamp:Date.now()
+  };
   state.journal.unshift(entry);
   if(state.journal.length>100) state.journal=state.journal.slice(0,80);
-  state.memories.push(`Journal ${entry.date}: ${text.substring(0,200)}`);
-  saveState(); enqueueSync('journal','add',entry); document.getElementById('journal-text').value=''; renderJournal(); showToast('Entry saved');
+  state.memories.push(`Journal ${entry.date}: ${cleanText.substring(0,200)}`);
+  saveState();
+  enqueueSync('journal','add',entry);
+  if (clearEditor) document.getElementById('journal-text').value='';
+  renderJournal();
+  return entry;
+}
+
+async function writeJournalWithAI() {
+  const hint = document.getElementById('journal-text').value.trim();
+  const todayKey = getTodayKey();
+  const tasks = getTasksForDate(todayKey);
+  const mood = state.mood[todayKey] || 'unknown';
+  const taskSummary = tasks.length
+    ? tasks.slice(0,8).map(t=>`- ${t.time ? t.time+' ' : ''}${t.name} (${t.category})`).join('\n')
+    : 'No tasks logged today';
+  setStatus('Thinking…'); setAvatarState('thinking'); showThinking();
+  const aiEntry = await callAI([{role:'user',content:`Write a personal daily journal entry for ${state.userName||'me'}.
+Tone: warm and honest, first person.
+Length: 120-180 words.
+Include: what happened today, what was learned, one gratitude line, and one intention for tomorrow.
+Today's mood: ${mood}
+Today's tasks:
+${taskSummary}
+${hint ? `Extra notes to weave in: ${hint}` : ''}
+Return only the journal entry text.`}], false, buildSystemPrompt());
+  removeThinking(); setStatus('Ready'); setAvatarState('idle');
+  const cleaned = (aiEntry || '').trim();
+  if(!cleaned){
+    showToast('AI journal could not be generated');
+    return;
+  }
+  document.getElementById('journal-text').value = cleaned;
+  const saved = saveJournalEntryText(cleaned, false);
+  if(saved){
+    showToast('AI journal written and saved');
+    addMessage('assistant', `I wrote and saved a journal entry for ${saved.date}. You can edit it in Journal anytime.`);
+  }
 }
 
 async function analyzeJournalWithAI() {
